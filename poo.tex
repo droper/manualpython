@@ -1,0 +1,422 @@
+\section{POO en Python}
+
+En Python no solo se puede trabajar con el paradigma estructurado, además tiene completo soporte de la programación orientada a objetos (POO). En la POO los conceptos del mundo real se modelan a través de clases y objetos y los programas consisten en transacciones entre objetos.\\
+
+Utilizar clases es opcional, se puede trabajar de forma estructurada mediante funciones o incluso solo con un script, dependiendo de la disponibilidad de tiempo con la que se trabaje. Programar utilizando POO requiere mayor tiempo de planeamiento y de preparación antes de empezar a implementar las funcionalidad buscadas, por lo que es más adecuado para proyectos de largo alcance y no para scripts que requieran resolver problemas en el acto.
+
+\section{Clases y Objetos}
+
+Una clase es la plantilla mediante la cual se crean objetos de un tipo, pero cada objeto puede tener valores diferentes en sus atributos. Como las funciones y los módulos, las clases son otra manera de empaquetar datos y reglas de negocio, incluso definen su propio namespace.\\
+
+Un objeto es una entidad que agrupa estados y funcionalidades. Las variables (atributos) del objeto son las que definen el estado y las funcionalidades se implementan mediante funciones propias del objeto, también conocidas como métodos. Cada objeto mantiene su propio namespace pero obtiene todas sus variables y métodos de la clase que le sirve de plantilla.\\
+
+La sintáxis para declarar una clase es:\\
+
+\begin{pyglist} [language=python]
+>>> class NuevaClase:
+        def metodo(self):
+            print "Estamos en una nueva clase"
+ 
+>>> objeto = NuevaClase()
+>>> objeto.metodo()
+Estamos en una nueva clase
+>>>
+\end{pyglist}
+
+Todo método de una clase recibe como parámetro implícito el argumento \textbf{self} (equivalente al \textbf{this} de C++), que es el objeto que llama al método, con el cual referencia a los atributos y métodos propios de la clase.\\
+
+\begin{pyglist} [language=python]
+>>> class NuevaClase:
+        def metodo(self):
+            print "Estamos en una nueva clase"
+ 
+>>> objeto = NuevaClase()
+>>> objeto.metodo()
+Estamos en una nueva clase
+>>>
+\end{pyglist}
+
+Para crear atributos en una clase se les asigna un valor, al igual que otras variables en Python.\\
+
+\begin{pyglist} [language=python]
+>>> class FirstClass:
+        def setdata(self, value):
+            self.data = value
+        def display(self):
+            print self.data
+    
+>>> 
+\end{pyglist}
+
+También se pueden crear atributos en un objeto fuera de la clase, lo usual es  hacerlo en el constructor pero no es obligatorio.\\
+
+\begin{pyglist} [language=python]
+>>> obj = FirstClass()
+>>> obj.atributo = 'Hola'
+>>> obj.atributo
+'Hola'
+>>> 
+\end{pyglist}
+
+Al igual que las funciones y las variables, las clases viven en los módulos y pueden ser importadas de otro módulo mediante una sentencia \textbf{import}.\\
+
+Se puede hacer lo mismo con las funciones. No es una capacidad que se utilice con frecuencia, pero demuestra como las clases en Python son atributos en namespaces.\\
+
+\begin{pyglist} [language=python]
+>>> def uppername(obj):
+...     return obj.atributo.upper()
+... 
+>>> uppername(obj)
+'HOLA'
+>>> FirstClass.metodo = uppername
+>>> obj2 = FirstClass()
+>>> obj2.atributo = 'HOLA'
+>>> obj2.metodo()
+'HOLA'
+>>> 
+\end{pyglist}
+
+Más allá de la sintáxis, el sistema de clases de Python en realidad solo consiste en búsquedas de atributos en un árbol de objetos y un primer argumento especial para las funciones.
+
+\subsection{Atributos compartidos}
+
+En una clase se pueden tener atributos cuyo valor sea heredado por todos los objetos. Si modificamos la variable en un objeto, esta es modificada solo en el objeto correspondiente, pero si se modifica en la clase, el valor cambia en todos los objetos siempre que no hayan cambiado el valor del atributo.\\
+
+\begin{pyglist} [language=python]
+>>> class SharedData:
+         spam = 42
+    
+>>> x = SharedData()
+>>> y = SharedData()
+>>> x.spam, y.spam
+(42, 42)
+>>> x.spam += 1
+>>> x.spam, y.spam
+(43, 42)
+>>> SharedData.spam = 99
+>>> x.spam, y.spam
+(43, 99)
+>>> 
+\end{pyglist}
+
+
+\subsection{Estándares}
+
+En Python el estándar para nombrar un módulo es empezar el nombre con una letra minúscula, y para las clases empezar con una letra mayúscula. No es obligatorio pero es la forma estándar de programar.\\
+
+Por ejemplo si tenemos un módulo persona este se llamaría \textbf{persona.py} y si se tiene una clase Persona en este módulo su nombre empezará con mayúscula, en caso sea un nombre compuesto de varias palabras, cada una empezará con mayúscula.\\
+
+\begin{pyglist} [language=python]
+>>> class Persona:
+         pass
+    
+>>> class PersonaNatural(Persona):
+         pass
+    
+>>> 
+\end{pyglist}
+
+
+
+\subsection{Herencia}
+
+Una de las características inherentes a la POO es la herencia. Una clase (subclase) puede obtener todos los atributos y métodos de otra clase (superclase) y modificarlos, de tal manera que no es necesario cambiar o copiar la superclase. Al heredar una clase de otra se pueden generar enteras jerarquías de clases donde unas especializan la labor de otras reutilizando su código y agregando lo que se considere conveniente para la funcionalidad de la nueva clase. Mientras más se baja en la jerarquía, más específico es el software.\\
+
+\begin{pyglist} [language=python]
+>>> class SecondClass(FirstClass):
+         def display(self):
+             print 'Current value = "%s"' % self.data
+    
+>>> 
+\end{pyglist}
+
+Cuando una subclase vuelve a implementar un método heredado de la superclase, lo está reemplazando. El otro método, \textbf{setdata} sigue funcionando igual que en \textbf{FirstClass}. Nada que se haga en una subclase afecta a la superclase.\\
+
+Cuando se hereda una subclase, esta puede reemplazar los métodos de la superclase y los métodos utilizados serán los de la subclase.\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+class Person:
+    def __init__(self, name, job=None, pay=0):
+        self.name = name
+        self.job = job
+        self.pay = pay
+    def lastName(self):
+        return self.name.split()[-1]
+    def giveRaise(self, percent):
+        self.pay = int(self.pay * (1 + percent))
+    def __repr__(self):
+        return '[Person: %s, %s]' % (self.name, self.pay)
+        
+class Manager(Person):
+    def giveRaise(self, percent, bonus=.10):
+        Person.giveRaise(self, percent + bonus)
+
+if __name__ == '__main__':
+    bob = Person('Bob Smith')
+    sue = Person('Sue Jones', job='dev', pay=100000)
+    frank = Manager('Frank Wayne', 'Manager', 600000)
+    print bob
+    print sue
+    print bob.lastName(), sue.lastName()
+    sue.giveRaise(.10)
+    print sue
+    frank.giveRaise(.15)
+    print frank
+\end{pyglist}
+
+En el ejemplo, se puede apreciar como la clase Manager vuelve a implementar la función giveRaise() de la clase Person y para hacerlo se limita a llamar a la función giveRaise() original y sumarle un valor al parámetro que se le pasa. Una subclase no solo puede redefinir métodos, además puede agregar métodos propios.\\
+
+Como toda clase es también un objeto, se pueden invocar las funciones directamente de las clases, siempre y cuando se pase de forma explícita el objeto sobre la cual se aplicará.
+
+\subsubsection{Herencia Múltiple}
+
+Al crear una subclase, esta puede heredar de varias superclases:\\
+
+\begin{pyglist} [language=python]
+>>> class C1:
+...      def metodo(self):
+...          print "Estamos en el metodo 1"
+... 
+>>> class C2:
+...      def metodo(self):
+...          print "Estamos en el metodo 2"
+... 
+>>> class C3(C1,C2):
+...     pass
+... 
+>>> obj = C3()
+>>> obj.metodo()
+Estamos en el metodo 1
+>>> 
+\end{pyglist}
+
+El orden de precedencia en la búsqueda en el árbol de atributos de la clase es de izquierda a derecha, con los métodos que aparecen en las clases más a la izquierda reemplazando a los métodos de igual nombre en las clases más a la derecha.
+
+\subsubsection{Clases abstractas}
+
+En las clases abstractas se definen métodos que no se van a utilizar en las instancias de la clase, solo existen para definir los métodos que tendrán las subclases. Al codificar un método de una clase abstracta se invoca una excepción para que al llamarlo se genere un error.\\
+
+\begin{pyglist} [language=python]
+>>> class Super:
+...     def delegate(self):
+...         self.action()
+...     def action(self):
+...         raise NotImplementedError('action must be defined!')
+... 
+>>> x = Super()
+>>> x.action()
+
+>>> x.action()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 5, in action
+NotImplementedError: action must be defined!
+>>> x.delegate()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 3, in delegate
+  File "<stdin>", line 5, in action
+NotImplementedError: action must be defined!
+>>> 
+\end{pyglist}
+
+Para las instancias de la subclase, el resultado es el mismo si no se reimplementa el método en la subclase.\\
+
+\begin{pyglist} [language=python]
+>>> class Sub(Super): pass
+... 
+>>> X = Sub()
+>>> X.delegate()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 3, in delegate
+  File "<stdin>", line 5, in action
+NotImplementedError: action must be defined!
+>>> 
+
+>>> class Sub(Super):
+...     def action(self): print 'spam'
+... 
+>>> X = Sub()
+>>> X.delegate()
+spam
+>>> 
+\end{pyglist}
+
+En versiones de Python superiores a las 2.6 existe una sintaxis especial para declarar clases abstractas:\\
+
+\begin{pyglist} [language=python]
+>>> from abc import ABCMeta, abstractmethod
+>>> class Super:
+...     __metaclass__ = ABCMeta
+...     @abstractmethod
+...     def method(self):
+...         pass
+... 
+>>> x = Super()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: Can't instantiate abstract class Super with abstract methods method
+>>> 
+\end{pyglist}
+
+La ventaja de esta sintaxis es que no se puede instanciar objetos de una clase abstracta.
+
+
+\subsection{Poliformismo}
+
+En el ejemplo anterior se podría agregar el siguiente código al final:\\
+
+\begin{pyglist} [language=python]
+if __name__ == '__main__':
+       
+    print '--All three--'
+    for obj in (bob, sue, tom):
+        obj.giveRaise(.10)
+        print obj
+\end{pyglist}
+
+En este ejemplo se puede ver como sin importar que objeto es igual se llama a la misma función y esta cumple ejecuta su código, con diferente resultado en el caso de un objeto Manager que de un objeto Person.\\
+
+\subsection{Atributos especiales de las clases}
+
+En las clases y objetos existen atributos especiales como \_\_class\_\_ que es la clase del objeto de la cual se llama, \_\_name\_\_ que es el nombre de la clase, \_\_dict\_\_ que es un diccionario con los atributos de una clase, entre otros atributos.\\
+
+\begin{pyglist} [language=python]
+>>> from persona import Person
+>>> bob = Person('Bob Smith')
+>>> bob
+[Person: Bob Smith, 0]
+>>> print bob
+[Person: Bob Smith, 0]
+>>> bob.__class__ 
+<class persona.Person at 0xb6a0a17c>
+>>> bob.__class__.___name__
+'Person'
+>>> list(bob.__dict__.keys()) 
+['pay', 'job', 'name']
+>>> dir(bob)
+['__doc__', '__init__', '__module__', '__repr__', 'giveRaise', 
+'job', 'lastName', 'name', 'pay']
+>>>
+>>> for key in bob.__dict__: 
+        print key, '=>', bob.__dict__[key]
+    
+('pay', '=>', 0)
+('job', '=>', None)
+('name', '=>', 'Bob Smith')
+>>> for key in bob.__dict__: 
+        print key, '=>', getattr(bob, key)
+    
+('pay', '=>', 0)
+('job', '=>', None)
+('name', '=>', 'Bob Smith')
+>>> 
+\end{pyglist}
+
+
+
+\subsection{Sobrecarga de operadores}
+
+En Python las clases pueden redifinir la funcionalidad de los operadores del lenguaje como +, -, *, [], etc de tal manera que las clases se adapten mejor al estilo de codificación común en Python.\\
+
+Cada operador tiene asignado un método especial que lo implementa en una clase. Por ejemplo, si una clase implementa el método \textbf{\_\_add\_\_}, este método es llamado cada vez que el objeto aparezca en una suma + y el valor de retorno del método se convierte en el resultado de la operación. Si la operación no es definida en una clase, intentar utilizarla va a producir una excepción.\\
+
+En general es una característica que es utilizada por creadores de APIs para otros desarrolladores, no por desarrolladores que implementen un producto para el usuario final.\\
+
+\begin{pyglist} [language=python]
+>>> class ThirdClass(SecondClass):
+         def __init__(self, value):
+             self.data = value
+         def __add__(self, other):
+             return ThirdClass(self.data + other)
+         def __str__(self):
+             return '[ThirdClass: %s]' % self.data
+ 
+>>> a = ThirdClass('abc') 
+>>> a.display() 
+Current value = "abc"
+>>> print a
+[ThirdClass: abc]
+>>> b = a + 'xyz' 
+>>> b.display() 
+Current value = "abcxyz"
+>>> print b
+[ThirdClass: abcxyz]
+>>> 
+\end{pyglist}
+
+
+\subsection{Constructores}
+
+Los atributos de las clases, al igual que las variables, pueden ser asignados a voluntad en cualquier punto del código, pero si se intenta utilizar una variable antes de que se le haya asignado un valor, la operación va a producir una excepción. Para evitar este hecho se utilizan los constructores, de tal manera que al instanciar un objeto se creen los atributos requeridos y se ejecuten las operaciones necesarias.\\
+
+En Python el constructor se llama \textbf{\_\_init\_\_}. Es parte de la familia de métodos sobrecargados de Python, estos métodos se heredan en cada clase y se escriben con doble guión bajo a cada lado para hacerlos distintos. Python los ejecuta de forma automática cuando una instancia que los soporta llama a la operación correspondiente, son sobre todo una alternativa a una simple ejecución de un método. Son opcionales, si se omiten la operación no es soportada. Si no se implementa el método \textbf{\_\_init\_\_}, al instanciarse un objeto este se creará vacio.\\
+
+La sintaxis del constructor es:\\
+
+\begin{pyglist} [language=python]
+>>> class ClaseEjemplo:
+         def __init__(self, argumento1):
+             self.atributo = argumento1
+             print self.atributo + ' fue bien recibido'
+    
+>>> ejem1 = ClaseEjemplo('Parametro')
+Parametro fue bien recibido
+>>> 
+\end{pyglist}
+
+
+Se puede heredar de alguna clase conocida y agregarle atributos y funciones:\\
+
+\begin{pyglist} [language=python]
+>>> class ListaMejor(list):
+        def __init__(self):
+            self.nombre = 'meee'
+        def setNombre(self, nombre):
+            self.nombre = nombre
+        def getNombre(self):
+            return self.nombre
+    
+>>> lista = ListaMejor()
+>>> lista
+[]
+>>> lista.nombre
+'meee'
+>>> lista.setNombre('Lista1')
+>>> lista.getNombre()
+'Lista1'
+\end{pyglist}
+
+
+
+
+\newpage
+
+\section{Ejercicios}
+
+\begin{enumerate}
+\item Cree una clase que implemente una pila, sus métodos (pop, push) y devuelva cuantos items quedan en la pila.
+
+\item Cree una clase que implemente una cola, y sus métodos y devuelva cuantos items quedan en la cola.
+
+\item Crea una clase que implemente el tipo ``Número imaginario''. La clase debe soportar la suma y la resta, así como la impresión mediante print.
+
+\item Crea una clase AutoCarreras que herede de una clase Auto sus atributos (número de llantas, de puertas, caballos de fuerza, velocidad, gasolina en el tanque) y métodos (agregarGasolina, arrancarMotor) y agregue nuevos atributos y métodos.
+
+\item Crea una clase abstracta llamada FiguraGeometrica con los atributos nombre, num\_lados y los métodos devolver\_nombre() y calcular\_area() y extiendala mediante las clases Rectángulo, Círculo, Triángulo y reimplemente las funciones de la superclase en cada una de las subclases.
+
+\item Crea una clase Refresco y hereda tres clase de esta (Gaseosa, JugoFrutas y AguaMineral). En cada subclase reprograma el constructor para que al instanciar la clase se vea el nombre de la clase en pantalla.
+
+\item Crea una clase NumeroRacional que tenga como atributo un numero racional (p. ej 5.5) e implemente los operadores de suma, resta, multiplicación, división y representación ( \_\_add\_\_, \_\_sub\_\_, \_\_mul\_\_, \_\_div\_\_,\_\_repr\_\_).
+
+\item Defina una clase \textit{EnsaladaFrutas} con una atributo \textit{frutas} que sea inicialmente ['melones', 'piñas', 'manzanas'] y un atributo \textit{raciones} cuyo valor inicial sea 4. Escriba un método \textit{\_\_init\_\_} que reciba los argumentos \textit{ingredientes} (una lista de cadenas) y \textit{num\_raciones} (un entero) y guarde los valores obtenidos en los atributos y \textit{frutas} y \textit{raciones} (las que queden).
+
+\item En el ejercicio anterior (\textit{EnsaladaFrutas}) agregue un método \textit{\_\_str\_\_} que imprima el número de raciones restantes y las frutas en la ensalada de frutas. La cadena debe verse como: ``2 raciones en la ensalada de ['platanos', 'manzanas']''
+
+\item En el ejercicio anterior escriba un método \textit{agregar()} que obtenga una cadena de texto y la agregue al final de la lista \textit{frutas}. Agregue además un método \textit{servir()} que reduzca en uno la cantidad de raciones e imprima ``Disfrute'', si ya no hay raciones debe imprimir ``Disculpe''.
+
+\end{enumerate}

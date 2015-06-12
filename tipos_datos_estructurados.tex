@@ -1,0 +1,500 @@
+Los tipos de datos utilizados hasta el momento han sido números (enteros y flotantes), listas y cadenas (que son una forma especial de lista). Los números son tipos de datos \textit{escalares} mientras que la cadenas y listas son tipos de datos \textit{secuenciales}. Un escalar es un dato atómico, único mientras que un dato secuencial se compone de una sucesión de elementos, tal como una cadena es una sucesión de caracteres. Los datos secuenciales son tipos de datos estructurados.
+
+\section{Cadenas}
+
+Una cadena es una sucesión de caracteres encerradas en comillas simples o dobles las que cuales puden ser manipuladas por los operadores y funciones de Python. Una cadena es inmutable, es decir, una vez creada en memoria ya no puede ser modificada.
+
+\subsection{Escapes}
+
+En un programa las cadenas no solo incluyen los caracteres que se ven en pantalla sino también caracteres especiales que no tienen una representación visible. Por ejemplo los \textit{saltos de línea} se muestran en pantalla como eso y no como un carácter visible. Los saltos de línea se incluyen en la cadena y producen un efecto al ser impresa, por ejemplo:\\
+
+\begin{pyglist} [language=python]
+>>> a='cadena\n de ejemplo'
+>>> a
+'cadena\n de ejemplo'
+>>> print a
+cadena
+ de ejemplo
+>>> 
+\end{pyglist}
+
+Al mostrar la cadena, se produce un salto de línea después de \textit{cadena}. Este salto de línea se codifica en dos caracteres: la barra invertida {\tt\char`\\} y la letra n. La barra invertida se llama carácter de escape e indica que el siguiente carácter es especial. Los saltos de línea tienen sus propios códigos en los estándares de codificación de texto como ASCII y Unicode. Por ejemplo en ASCII el código de {\tt\char`\\n} es 10:\\
+
+\begin{pyglist} [language=python]
+>>> ord('\n')
+10
+>>>
+\end{pyglist}
+
+Algunos caracteres de control son {\tt\char`\\n} que genera un salto de línea, {\tt\char`\\t} que tabula el texto de forma horizontal (8 caracteres), {\tt\char`\\v} que los tabula vertical y {\tt\char`\\b} que retrocede el texto un espacio.\\
+
+\begin{pyglist} [language=python]
+>>> print "Hola\ncadena"
+Hola
+cadena
+>>> print "Tabular el\ttexto"
+Tabular el	texto
+>>> print "Tabula\vvertical"
+Tabula
+      vertical
+>>> print "Retrocede \bun espacio"
+Retrocedeun espacio
+>>> 
+\end{pyglist}
+
+Si se quiere imprimir una comilla en un texto con el mismo tipo de comillas, se debe utilizar (escapar) con una barra invertida.\\
+
+\begin{pyglist} [language=python]
+>>> print "Comillas \" en una cadena"
+Comillas " en una cadena
+>>> print 'Comillas \' en una cadena'
+Comillas ' en una cadena
+>>>
+\end{pyglist}
+
+\subsection{Longitud e indexación}
+
+Para medir la longitud de una cadena y/o una lista se utiliza la función \textit{len}.\\
+
+\begin{pyglist} [language=python]
+>>> len('Hola Mundo')
+10
+>>> len('Hola\nMundo')
+10
+\end{pyglist}
+
+\subsection{Subcadenas}
+
+Para acceder a cada carácter de una cadena se utilizan los corchetes (como en una lista). El primer elemento tiene índice cero. Si se desea obtener una subcadena se colocan el índice del primer y último carácter con dos puntos de por medio (lo mismo sirve para las listas).\\
+
+\begin{pyglist} [language=python]
+>>> a = "Clase de Python"
+>>> a[14]
+'n'
+>>> a[4:11]
+'e de Py'
+>>> 
+\end{pyglist}
+
+\subsection{Recorrido de cadenas}
+
+Debido a que son listas, las cadenas se pueden recorrer con un bucle \textbf{for-in}.\\
+
+\begin{pyglist} [language=python]
+>>> for c in "Cadena":
+...     print c
+... 
+C
+a
+d
+e
+n
+a
+>>>
+\end{pyglist}
+
+La palabra reservada \textbf{in} sirve también para identificar si un elemento está dentro de una lista o cadena, por ejemplo:\\
+
+\begin{pyglist} [language=python]
+>>> 'a' in 'Hola'
+True
+>>> 'a' in 'Python'
+False
+>>> 
+\end{pyglist}
+
+Una forma alternativa de recorrer una lista es mediante su índice. Se itera sobre un rango del tamaño de la lista y se referencia cada elemento.\\
+
+\begin{pyglist} [language=python]
+>>> cad = "Ejemplo"
+>>> for i in range(len(cad)):
+...     print i, cad[i]
+... 
+0 E
+1 j
+2 e
+3 m
+4 p
+5 l
+6 o
+>>> 
+\end{pyglist}
+
+La variable i toma los valores de range(len(a)), en este caso los valores comprendidos entre 0 y 6, ambos inclusive. Con a[i] se accede a cada uno de ellos.
+
+\subsection{Comparación de cadenas}
+
+Al igual que en las listas, para comparar cadenas se emplea los operadores '==', '!=', '$<$', '$>$', '$<=$', '$>=$'. Los operadores  '$<$', '$>$', '$<=$', '$>=$' se utilizan comparando de izquierda a derecha cada carácter entre si.\\
+
+\begin{pyglist} [language=python]
+>>> 'Python' == 'Python'
+True
+>>> a = 'Cadena'
+>>> b = 'Cadena'
+>>> a == b
+True
+>>> x = "Linux"
+>>> y = "Windows"
+>>> x == y
+False
+>>> 
+>>> 'Martes' != 'Lunes'
+True
+>>> 'A' > 'a'
+False
+>>> 'Abcdefg' < 'xyz'
+True
+>>> 
+\end{pyglist}
+
+
+\section{Listas}
+
+Tal como se ha mencionado, las cadenas son tipos especiales de listas, el tipo secuencial de datos más utilizado en Python. En una lista se pueden almacenar diferentes tipos de datos como números, cadenas e incluso otras listas. Para representar las listas se utilizan elementos separados por comas encerrados entre corchetes.\\
+
+\begin{pyglist} [language=python]
+>>> [1, 2, 3, 4,5, 6]
+[1, 2, 3, 4, 5, 6]
+>>> ['hola', 'mundo']
+['hola', 'mundo']
+>>> a = [1, 6, 3, -5, 10.6]
+>>> a
+[1, 6, 3, -5, 10.6]
+>>> b = ['lista', ['otra', 'lista']]
+>>> c = [2+4, 5-2, 3*'cad']
+>>> c
+[6, 3, 'cadcadcad']
+>>> 
+\end{pyglist}
+
+Muchas de las operaciones y funciones que operan sobre las cadenas también funcionan en las listas. La función \textit{len} devuelve la longitud de una lista, el operador + las concatena, el operador * las multiplica un número de veces, se puede hacer referencia a un elemento de la lista por su índice, el operador de corte obtiene un un fragmento de la lista:\\
+
+\begin{pyglist} [language=python]
+>>> a = [1, 6, 3, -5, 10.6]
+>>> len(a)
+5
+>>> b = ['lista', ['otra', 'lista']]
+>>> a + b
+[1, 6, 3, -5, 10.6, 'lista', ['otra', 'lista']]
+>>> 4*a
+[1, 6, 3, -5, 10.6, 1, 6, 3, -5, 10.6, 1, 6, 3, -5, 10.6, 1, 6, 3, -5, 10.6]
+>>> a[2]
+3
+>>> a[1:3]
+[6, 3]
+>>> a[2:]
+[3, -5, 10.6, 3]
+>>> a[:4]
+[1, 6, 3, -5]
+>>> [1]*10
+[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+>>> 
+
+\end{pyglist}
+
+El bucle \textbf{for-in} recorre los elementos de una lista:\\
+
+\begin{pyglist} [language=python]
+>>> for i in [1, 5, -3]:
+...     print i
+... 
+1
+5
+-3
+>>> 
+\end{pyglist}
+
+\subsection{Comparación de listas}
+
+Los operadores de comparación de las cadenas también trabajan con las listas.  Tanto los operadores de igualdad (==) como el de desigualdad (!=) siguen las siguientes reglas:
+
+\begin{itemize}
+\item si las listas son de talla diferente, resolviendo que las listas son diferentes;
+\item y si miden lo mismo, comparando elemento a elemento de izquierda a derecha y resolviendo que las dos listas son iguales si todos sus elementos son iguales, y diferentes si hay algún elemento distinto.
+\end{itemize}
+
+\begin{pyglist} [language=python]
+>>> [1, 2, 3] == [1, 2]
+False
+>>> [1, 2, 3] == [1, 2, 3]
+True
+>>> [1, 2, 3] == [1, 2, 4]
+False
+>>> 
+\end{pyglist}
+
+Los operadores '$<$', '$>$', '$<=$', '$>=$' se utilizan comparando de izquierda a derecha cada elemento entre si, al igual que en las cadenas. Por ejempo, al evaluar la expresión [1, 2, 3] $<$ [1, 3, 2] se empieza por comparar los primeros elementos de ambas listas. Como no es cierto que $1 < 1$, pasamos a comparar los respectivos segundos elementos. Como $2 < 3$, el resultado es True, sin necesidad de efectuar ninguna comparación adicional.\\
+
+\begin{pyglist} [language=python]
+>>> [1, 2, 3] < [1, 3, 2]
+True
+>>> [10, 20, 30] > [1, 2, 3]
+True
+>>> [1, 2, 3] < [1, 2]
+False
+>>> 
+\end{pyglist}
+
+\subsection{Modificar, agregar y eliminar elementos a listas}
+
+Para modificar el contenido de una lista se pueden modificar sus elementos, agregar elementos o eliminarlos. \\
+
+\begin{pyglist} [language=python]
+>>> a = [4,7,1]
+>>> a[2] = 5
+>>> a
+[4, 7, 5]
+>>> 
+\end{pyglist}
+
+Al agregar elementos a una lista la hacemos crecer, una forma es sumándole otra lista pero si se desea agregar un elemento que no está en una lista se necesita utilizar la función \textit{append}. Además de la diferencia entre agregar una lista y un elemento fuera de una lista, otra diferencia entre + y append es que la segunda no crea una nueva lista sino \textit{modifica} la lista original. Debido a esta diferencia en el trabajo en memoria, append es más eficiente.\\
+
+Una lista puede ser representada por una variable que apunte a esta lista, debido a que es un puntero, si se asigna esta variable a otra variable, ambas apuntaran a la misma lista, de tal manera que cualquier modificación repercutirá en ambas variables. Si se quiere comprobar si dos variables representan la misma posición en memoria, se utiliza el operador \textbf{is}.\\
+
+\begin{pyglist} [language=python]
+>>> a = [9,3,6]
+>>> a
+[9, 3, 6]
+>>> a.append(12)
+>>> a
+[9, 3, 6, 12]
+>>> >>> b = a
+>>> b
+[9, 3, 6, 12]
+>>> a.append(5)
+>>> b
+[9, 3, 6, 12, 5]
+>>> a is b
+True
+>>> 
+\end{pyglist}
+
+Para eliminar elementos de una lista se utiliza el método \textbf{pop} con el índice del elemento a eliminar. También se puede utilizar el operador de corte para eliminar un fragmento de la lista.\\
+
+\begin{pyglist} [language=python]
+>>> a = range(1,10)
+>>> a
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+>>> a.pop(5)
+6
+>>> a
+[1, 2, 3, 4, 5, 7, 8, 9]
+>>> b = a
+>>> a.pop(2)
+3
+>>> b
+[1, 2, 4, 5, 7, 8, 9]
+>>> a
+[1, 2, 4, 5, 7, 8, 9]
+>>> 
+\end{pyglist}
+
+El borrado de elementos de una lista es peligroso cuando se mezcla con el recorrido de las mismas. Por ejemplo un programa que elimina los elementos negativos de una lista.\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+a = [1, 2, -1, -4, 5, -2]
+
+for i in range(0,len(a)):
+    if a[i] < 0:
+        a.pop(i)
+  
+print a
+\end{pyglist}
+
+Este programa no funciona bien y da un error:
+
+\begin{pyglist} [language=python]
+Traceback (most recent call last):
+  File "solo_positivos.py", line 9, in <module>
+    if a[i] < 0:
+IndexError: list index out of range
+\end{pyglist}
+
+El mensaje de error nos dice que tratamos de acceder a un elemento con índice fuera del rango de índices válidos. ¿Cómo es posible, si la lista tiene 6 elementos y el índice i toma valores desde 0 hasta 5? Al eliminar el tercer elemento (que es negativo), la lista ha pasado a tener 5 elementos, es decir, el índice de su ĺtimo elemento es 4. Pero el bucle ``decidió'' el rango de índices a recorrer antes de borrarse ese elemento, es decir, cuando la lista tenía el valor 5 como índice del útimo elemento. Cuando tratamos de acceder a a[5], Python detecta que estamos fuera del rango válido. Es necesario que el bucle ``actualice'' el valor del último índice válido con cada iteración:\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+a = [1, 2, -1, -4, 5, -2]
+
+i=0
+while i < len(a):
+    if a[i] < 0:
+        a.pop(i)
+    i += 1
+
+print a
+\end{pyglist}
+
+Al ejecutar el programa se ve que el -4 no ha sido eliminado. Inicialmente la lista era [1, 2, -1, -4, 5, -2], al eliminar el elemento a[2] de la lista original, i valía 2 y la lista se convierte en  [1, 2, -4, 5, -2]. Después del borrado, se incrementó i y eso hizo que la siguiente iteración considerara el posible borrado de a[3], pero en ese instante -4 estaba en a[2], así que ``se lo salta''. La solución es sencilla: sólo se ha de incrementar i en las iteraciones que no producen borrado alguno:\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+a = [1, 2, -1, -4, 5, -2]
+
+i=0
+while i < len(a):
+    if a[i] < 0:
+        a.pop(i)
+    else:
+        i += 1
+        
+print a
+\end{pyglist}
+
+\subsection{Pertenencia a una lista}
+
+Al igual que en las cadenas, para saber si un elemento pertenece a una lista se utiliza el operador \textbf{in}. 
+
+\begin{pyglist} [language=python]
+>>> a = [4, 9, 1, -34, 7]
+>>> 4 in a
+True
+>>> 100 in a
+False
+>>>
+\end{pyglist}
+
+\subsection{Listas por comprensión (List Comprehensions)}
+
+En muchas ocasiones para generar una lista se puede utilizar una característica de Python llamada ``listas por comprensión'', la cual permite crear listas en base a un programa ``in line'' dentro de la lista.\\
+
+Por ejemplo, el siguiente programa escoge solo los números pares de una lista generada mediante range() y los agrega a una lista.\cite{Ziade2008} \\
+
+\begin{pyglist} [language=python]
+numbers = range(10)
+size = len(numbers)
+evens = []
+i = 0
+while i < size:
+    if i % 2 == 0:
+       evens.append(i)
+    i += 1
+evens
+[0, 2, 4, 6, 8]
+\end{pyglist}
+
+En vez de llevar a cabo todo este procedimiento utilizando una variable para iterar (i) y hacer trabajar al interprete en cada iteración, se puede utilizar el siguiente código:
+
+\begin{pyglist} [language=python]
+>>> [i for i in range(10) if i % 2 == 0]
+[0, 2, 4, 6, 8]
+>>>
+\end{pyglist}
+
+\subsection{Copiado de una lista}
+
+Si se asigna una lista a otra variable, lo único que se consigue es crear una nueva referencia a esa lista. Para copiar una lista se utilizan [:] o list().\\
+
+\begin{pyglist} [language=python]
+>>> a = [3,4,6,8,3,6]
+>>> b = a
+>>> b
+[3, 4, 6, 8, 3, 6]
+>>> a is b
+True
+>>> b = a[:]
+>>> a is b
+False
+>>> b = list(a)
+>>> a is b
+False
+>>> 
+\end{pyglist}
+
+\section{Tuplas}
+
+Todo lo explicado sobre listas es válido para las tuplas, con la excepción de que las tuplas no pueden modificarse. Para declarar una tupla se utilizan paréntesis, en caso se desee una tupla de un solo elemento se agrega una coma para diferenciarlo de un elemento entre paréntesis.
+
+\begin{pyglist} [language=python]
+>>> t = (1,2,3,4)
+>>> t[2]
+3
+>>>  type(t)
+<type 'tuple'>
+>>> t1 = (1,)
+>>> type(t1)
+<type 'tuple'>
+>>> type(t)
+\end{pyglist}
+
+Las tuplas no pueden modificarse una vez creadas pero son más ligeras que las listas. Para convertir de una lista a una tupla y viceversa se utilizan los comandos \textbf{list} y \textbf{tuple}.
+
+\section{Diccionarios}
+
+Los diccionarios son estructuras de datos donde una ``clave'' hace referencia a un valor (como en una hash table). Para declararlos se utilizan llaves y para hacer referencia a los valores se colocan las claves entre corchetes. Como clave se puede utilizar cualquier valor inmutable: cadenas, números, tuplas, booleanos. Los valores en un diccionario no están ordenados.\\
+
+Esto es así porque los diccionarios se implementan como tablas hash, y a la hora de introducir un nuevo par clave-valor en el diccionario se calcula el hash de la clave para después poder encontrar la entrada correspondiente rápidamente. Si se modificara el objeto clave después de haber sido introducido en el diccionario, evidentemente, su hash también cambiaría y no podría ser encontrado.\\
+
+\begin{pyglist} [language=python]
+>>> d = {2: 123}
+>>> d[2]
+123
+>>> d[3] = 456
+>>> d
+{2: 123, 3: 456}
+>>> d["hola"] = 9887
+>>> d
+{2: 123, 3: 456, 'hola': 9887}
+>>> d[2] = [100, 200, 300]
+>>> d
+{2: [100, 200, 300], 3: 456, 'hola': 9887}
+>>> 
+>>> 2 in d
+True
+>>> 5 in d
+False
+>>> 
+
+\end{pyglist}
+
+Como se puede apreciar, si se quiere agregar un nuevo par clave-valor, se asigna el valor a la clave en el diccionario y si se quiere comprobar si existe una clave, se utiliza el operador \textbf{in}.
+
+
+\section{Ejercicios}
+
+\begin{enumerate}
+\item Represente dos barras invertidas seguidas en una cadena.
+
+\item Escriba un programa que lea una cadena y muestre el número de espacios en blanco que contiene.
+
+\item Escriba un programa que lea una cadena y muestre el número de letras mayúsculas que contiene.
+
+\item Escriba una programa que lea una cadena y muestra en pantalla el mensaje ``Contiene dígito'' si contiene algún dígito y ``No contiene dígito'' en caso contrario.
+
+\item Escriba un contador de palabras. Al programa se le ingresa una oración y este encuentra el número de palabras (tip: el número de palabras es igual al número de espacios en blanco más uno).
+
+\item Escriba un programa que devuelva el tamaño de la primera palabra de una oración.
+
+\item Escriba un programa que reciba una cadena y un entero k y devuelva cuantas palabras tienen longitud k.
+
+\item Escriba un programa que muestre la cantidad de dígitos que aparecen en una cadena introducida por teclado. 
+
+\item Escriba un programa que muestre la cantidad de números que aparecen en una cadena introducida por teclado (un número puede estar compuesto de uno o más dígitos). 
+
+\item Escriba un programa que indique si una cadena introducida por el usuario está bien formada como identificador de variable. Si lo está, mostrará el texto ``Identificador válido'' y si no, ``Identificador inválido''.
+
+\item Un texto está bien parentizado si por cada paréntesis abierto hay otro más adelante que lo cierra. Escribaa un programa que lea una cadena y responda si está bien o mal parentizada.
+
+\item Implementa un programa que lea de teclado una cadena que representa un número binario. Si algún carácter de la cadena es distinto de '0' o '1', el programa advertirá al usuario de que la cadena introducida no representa un número binario y pedirá de nuevo la lectura de la cadena.
+
+\item Escriba un programa que lea tres cadenas y muestre el prefijo común más largo de todas ellas.
+
+\item Escriba un programa que almacene en una variable a la lista obtenida con range(1,4) y a continuación, la modifique para que cada componente sea igual al cuadrado del componente original. El programa mostrará la lista resultante por pantalla.
+
+\item Escriba un programa que, dada una lista a cualquiera, sustituya cualquier elemento negativo por cero.
+
+\item Escriba un programa que elimine de una lista todos los elementos de valor par y muestre por pantalla el resultado.
+
+\item Escriba un programa que elimine de una lista todos los elementos de índice par y muestre por pantalla el resultado.
+
+\item Se dispone de una cadena que contiene una frase cuyas palabras están separadas por un número arbitrario de espacios en blanco. ¿Se puede``estandarizar'' la separación de palabras en una sola línea Python? Por estandarizar quiere decir que la cadena no empiece ni acabe con espacios en blanco y que cada palabra se separe de la siguiente por un unico espacio en blanco.
+
+\item Cree un diccionario cuyas claves sean cuatro regiones del Perú y sus valores sean las capitales de cada región. Itere ese diccionario e imprima la clave y valores de la forma: "La capital de X es Y". Para iterar sobre el diccionario utilice iteritems() o keys().
+\end{enumerate}

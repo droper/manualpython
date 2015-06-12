@@ -1,0 +1,480 @@
+\section{Operadores}
+
+En Python se utilizan los operadores aritméticos para llevar cabo operaciones matemáticas. Los operadores existentes son: +, -, *, /, \%, **.
+
+\begin{pyglist} [language=python]
+>>> 4 + 5
+9
+>>> 12 - 9
+3
+>>> 5 * 6
+30
+>>> 24 / 4
+6
+>>> 9 % 4
+1
+>>> 3 ** 2
+9
+>>>
+\end{pyglist}
+
+\section{Operadores lógicos y de comparación}
+
+Para programar existen tres operadores lógicos: la ``y lógica'' o conjunción (and), la ``o lógica'' o disyunción (or) y el ``no lógico'' o negación (not).\\
+
+Cada operador tiene su propia tabla de verdad.\\
+
+El operador and da como resultado True si y sólo si son verdaderos sus dos operandos. La tabla del operador and es:\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|} \hline
+Izquierdo    & Derecho & Resultado   \\ \hline
+True         & True    &   True      \\ \hline
+True         & False   &   False     \\ \hline
+False        & True    &   False     \\ \hline
+False        & False   &   False     \\ \hline
+\end{tabular}
+\end{table}
+
+El operador or proporciona True si cualquiera de sus operandos es True, y False sólo cuando ambos operandos son Falses. La tabla del operador or es:\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|} \hline
+Izquierdo    & Derecho & Resultado     \\ \hline
+True         & True    &   True      \\ \hline
+True         & False   &   True      \\ \hline
+False         & True   &   True     \\ \hline
+False         & False  &   False     \\ \hline       
+\end{tabular}
+\end{table}
+
+El operador not es un operador unario y devuelve True si el operando es False y viceversa. La tabla del operador not es:\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|} \hline
+Izquierdo    & Resultado      \\ \hline
+True         & False        \\ \hline
+False        & True        \\ \hline
+\end{tabular}
+\end{table}
+
+Al combinar valores verdaderos y falsos se pueden formar expresiones lógicas que den como resultado True o False.\\
+
+\begin{pyglist} [language=python]
+>>> True and True
+True
+>>> True and False
+False
+>>> False and False
+False
+>>> False or True
+True
+>>> not False
+True
+>>> not True
+False
+>>>
+\end{pyglist}
+
+
+Al utilizarse en conjunto los operadores lógicos tiene diferente precedencia, por ejemplo.\\
+
+\begin{pyglist} [language=python]
+>>> True or False and True
+True
+>>> True and False or True
+True
+>>> 
+\end{pyglist}
+
+Existen varios operadores que devuelven valores booleanos (True o False) al operar, entre ellos están los operadores de comparación los cuales son: $>$, $<$, $>=$, $<=$, ==, !=.\\
+
+\begin{pyglist} [language=python]
+>>> 4 > 5
+False
+>>> 6 < 7
+True
+>>> 5 >= 5
+True
+>>> 4 <= 3
+False
+>>> 4 <= 4
+True
+>>> 8 == 8
+True
+>>> 5 != 6
+True
+\end{pyglist}
+
+\section{Sentencias condicionales}
+
+La sentencia condicional 'if' (si) sirve para bifurcar el flujo de un programa. ¿Qué significa esto?\\
+
+Un programa sigue un flujo secuencial, una instrucción se ejecuta después de la anterior, pero al llegar a un if, se puede decidir si ejecutar un bloque de instrucciones u otro, dependiendo de las condiciones definidas en el programa. Al llegar a este punto, ejecuta esta(s) accion(es) sólo si la condición es cierta.\\
+
+Este tipo de sentencia se denomina condicional y en Python se escribe de la siguiente forma:\\
+
+\begin{pyglist} [language=python]
+if condition:
+    action
+    action
+    ...
+\end{pyglist}
+
+\subsection{Sentencia if}
+
+Como ejemplo consideremos la división de dos números, se puede calcular siempre y cuando el divisor sea diferente de cero. Si hacemos un programa que divide dos números, debemos evitar que el divisor sea cero para lo cual se utiliza una sentencia if.\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+a = float(raw_input('Valor del divisor: '))
+b = float(raw_input('Valor del dividendo: '))
+
+if a != 0:
+    x = b/a
+    print 'Solucion: ', x   
+\end{pyglist}
+
+Como se puede apreciar, la sentencia if es seguida por una condición que indica ``a debe ser diferente de cero''. Si la condición es verdadera, se ejecuta el consiguiente bloque de código, si es falsa no se ejecuta y termina el programa.\\
+
+En el ejemplo se pueden ver dos importantes reglas sintácticas de Python:
+
+\begin{enumerate}
+\item La condición de la sentencia if es seguida por dos puntos (:).
+\item Las líneas de código que se ejecutan luego del if tienen que seguir todas una misma identación (o sangrado según el texto). 
+\end{enumerate}
+
+El programa no tiene errores debido al if, pero si el divisor es cero no devuelve nada, un comportamiento confuso para el usuario. Para evitarlo podemos incluir un segundo if y el programa quedaría como sigue:\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+a = float(raw_input('Valor del divisor: '))
+b = float(raw_input('Valor del dividendo: '))
+
+if a != 0:
+    x = b/a
+    print 'Solucion: ', x
+
+if a == 0:
+    print "No se puede realizar una division entre cero."
+\end{pyglist}
+
+En el segundo ejemplo se incluye una segunda sentencia if la que comprueba si a es cero, de ser así, escribe en la pantalla que no se puede realizar la división.\\
+
+Este segundo if, si bien agrega una funcionalidad útil al programa, es ineficiente debido a que se va a ejecutar el condicional sea cual sea el valor de a. Para solucionar este problema se necesita que si la condición no se cumple, se ejecute otro bloque de código, para este se utiliza la sentencia else.
+
+\subsection{En caso contrario (else)}
+
+La palabra ``else'' significa, en inglés, ``sino'' o en ``caso contrario''. Al igual que en el if, los bloques de código en una sentencia else requieren ser identados.\\
+
+El código de la división entre cero utilizando un else es:\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+a = float(raw_input('Valor del divisor: '))
+b = float(raw_input('Valor del dividendo: '))
+
+if a != 0:
+    x = b/a
+    print 'Solucion: ', x
+else:
+    print "No se puede realizar una division entre cero."
+\end{pyglist}
+
+Si en vez de discernir si un numéro es o no cero, se buscará utilizar más condiciones posibles de una expresión lógica entonces la sentencia else se reemplaza por la sentencia elif.
+
+
+\subsection{Condicionales múltiples (elif)}
+
+En diversos problemas, las alternativas no serán solo dos sino se deberá analizar diferentes casos. En este escenario se utiliza la sentencia elif (else if en otros lenguajes) para discernir que condición es la que se cumple.\\
+
+Por ejemplo, si se desea determinar cuál es el mayor de tres números, se puede utilizar el siguiente algoritmo (en una gran cantidad de problemas, como este, no existe un solo algoritmo como solución, sino que pueden pensarse e implementarse diversos algoritmos que solucionen el problema, la respuesta de un programador no es siempre igual a la de otro):
+
+\begin{enumerate}
+\item Comparar el primer valor con el segundo y el tercero, si es mayor que ambos entonces es el mayor número.
+\item Si lo anterior no se cumple entonces se compara el segundo valor con los otros dos, si es mayor que ambos es el número más grande.
+\item Si todo lo anterior no es cierto, se compara el tercer número.
+\end{enumerate}
+
+Este algoritmo se puede implementar utilizando solo sentencias if, pero es poco eficiente ya que si la primera condición resulta ser cierta, igual evaluaría los otros casos cuando ya no es necesario hacerlo. Para hacerlo más eficiente utilizamos la sentencia elif.\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+a = int(raw_input('Dame el primer numero: '))
+b = int(raw_input('Dame el segundo numero: '))
+c = int(raw_input('Dame el tercer numero: '))
+
+if a >= b and a >= c:
+    maximo = a
+elif b >= a and b >= c:
+    maximo = b
+elif c >= a and c >= b:
+    maximo = c
+print 'El maximo es', maximo
+\end{pyglist}                    
+
+Los algoritmos que se pueden expresar con \textbf{if}, \textbf{if-else} y \textbf{elif} se pueden expresar solo con \textbf{if} pero pierden legibilidad y eficiencia.
+
+\section{Sentencias iterativas}
+
+Si se desea no solo elegir entre bloques de código a ejecutar, sino ejecutarlos varias veces, se utilizan sentencias iterativas, las que como su nombre indica, iteran un bloque de código n veces.\\
+
+Python permite indicar que deseamos que se repita un trozo de programa de dos formas distintas: mediante la sentencia while y mediante la sentencia for. 
+
+\subsection{La sentencia while}
+
+En inglés, ``while'' significa ``mientras''. La sentencia while se usa así:\\
+
+\begin{pyglist} [language=python]
+while condicion:
+    action
+    action
+    .
+    .
+    .
+    action
+\end{pyglist}
+
+Y su significado es:\\
+
+\textit{Mientras} se cumpla esta condición, repetir las siguientes acciones.\\
+
+Las sentencias que implican repetición se denominan \textit{bucles}. En un bucle, un conjunto de instrucciones son repetidas una cantidad de veces. En el caso del \textbf{While}, el bloque de código se repite hasta que determinada condición sea falsa.\\
+
+Por ejemplo, en el siguiente programa se imprimen números de 0 al 4 utilizando un bucle \textbf{while}:\\
+
+\begin{pyglist} [language=python]
+i=0
+while i < 5:
+    print i
+    i += 1
+print 'Hecho'
+\end{pyglist}
+
+En este ejemplo se puede ver que la sentencia \textbf{while} termina en dos puntos luego de la condición, la identación indica que líneas pertenecen al bucle \textbf{while} y la última línea no pertenece al bucle y se ejecuta cuando el \textbf{while} ha terminado.
+
+\subsubsection{Cálculo de la sumatoria}
+
+Como ejemplo del uso de un bucle, se mostrará como se puede calcular una sumatoria. La sumatoria matemática consiste en sumar una cantidad de veces determinada expresión. Por ejemplo si se desean sumar los mil primeros números naturales:
+
+$$ \sum_{i=0}^{1000} i$$
+
+O, lo que es lo mismo, el resultado de 1 + 2 + 3 + · · · + 999 + 1000.\\
+
+En egeneral la primera idea que le suele venir a quienes aprenden a programar es sumar (1 + 2 + 3 + ... + 999 + 1000) e imprimir esa suma en la pantalla, un procedimiento tedioso e inútil. Se podría sumar también los números a una variable, lo que sería otra forma tediosa y mecánica de llevar a cabo la operación.\\
+
+Para hacer de forma concisa la suma se utilizará un bucle while:\\
+
+\begin{pyglist} [language=python]
+sumatorio = 0
+while condicion :
+    sumatorio += numero
+print sumatorio
+\end{pyglist}
+
+
+\subsection{El bucle for-in}
+
+Hay otro tipo de bucle en Python: el bucle \textbf{for-in}, que se puede leer como ``para todo elemento de una serie, hacer. . . ''. Un bucle \textbf{for-in} presenta el siguiente aspecto:\\
+
+\begin{pyglist} [language=python]
+for variable in serie de valores:
+    action
+    action
+    .
+    .
+    .
+    action
+\end{pyglist}
+
+Por ejemplo:\\
+
+\begin{pyglist} [language=python]
+for nombre in ['Pepe', 'Ana', 'Juan']:
+    print 'Hola,', nombre
+\end{pyglist}
+
+Los nombres entre corchetes y separados por comilla son una lista de nombres. Las listas se estudiarán más adelante en el curso, ahora solo es necesario saber que el bucle \textbf{for-in} ha iterado sobre sobre los nombres, la variable \textit{nombre} ha tomado el valor de cada uno de forma ordenada, de izquierda a derecha.\\
+
+Para poner un ejemplo, se puede pensar en el problema de elevar una serie de números a una potencia:\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+numero = int(raw_input('Dame un numero: '))
+
+for potencia in [2, 3, 4, 5]:
+    print numero, 'elevado a ',potencia, ' es ', (numero ** potencia)
+\end{pyglist}
+
+En caso que se desee iterar en grandes números (de 1 a 100 por ejemplo), se utiliza la función range(), tal como se muestra en el siguiente ejemplo:\\
+
+\begin{pyglist} [language=python]
+>>> range(10)
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+>>> range(1,10)
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+>>> range(1,10,2)
+[1, 3, 5, 7, 9]
+\end{pyglist}
+
+En el ejemplo se ve como range() crea una lista cuyos primer y último valor son el primer parámetro y el anterior al segundo parámetro. En caso que no se coloque un tercer parámetro el intervalo entre los elementos de la lista será 1, si se coloca un tercer parámetro se utilizará como intervalo, como se puede ver en el sgundo ejemplo con la función range().\\
+
+Para mostrar un ejemplo más complejo, se calcularán las raices de un número:\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+numero = float(raw_input('Dame un numero: '))
+
+for n in range(2, 101):
+    print 'la raiz', n, '-esima de ', numero,' es ', (numero**(1.0/n))
+\end{pyglist}
+
+Para calcular una sumatoria, tal como se hizo con el while, se puede utilizar el siguiente código:\\
+
+\begin{pyglist} [language=python]
+sum = 0
+for i in range(1, 1001):
+    sum += i
+print sum
+\end{pyglist}
+
+Para calcular si un número es o no primo:\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+num = int(raw_input('Dame un numero: '))
+
+creo_que_es_primo = True
+
+for divisor in range(2, num):
+    if num % divisor == 0:
+        creo_que_es_primo = False
+        
+if creo_que_es_primo:
+    print 'El numero', num, 'es primo'
+else:
+    print 'El numero', num, 'no es primo'
+\end{pyglist}
+
+\subsection{Rotura y salto en bucles: break y continue}
+
+En diversos programas es necesario terminar la ejecución de un bucle antes de que termine, por ejemplo, en el anterior programa donde se calcula si un número es o no primo, a pesar de que se haya encontrado que el número no es primo, el programa se sigue ejecutando. Para evitar este malgasto de recursos se utiliza la sentencia \textbf{break} (romper en inglés).\\
+
+En el siguiente programa se calculará si un número es o no primo, pero se utilizará break para terminar el bucle en cuanto se encuentre que el número es primo.\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+num = int(raw_input('Dame un numero: '))
+
+creo_que_es_primo = True
+
+for divisor in range(2, num):
+    if num % divisor == 0:
+        creo_que_es_primo = False
+        break
+
+if creo_que_es_primo:
+    print 'El numero', num, 'es primo'
+else:
+    print 'El numero', num, 'no es primo'
+\end{pyglist}
+
+Otra sentencia importante para controlar la ejecución de un bloque es \textbf{continue} (continuar en inglés). Esta sentencia a diferencia de \textbf{break} no termina la ejecución de un bucle, solo pasa a la siguiente iteración sin ejecutar el resto del código dentro del bucle.\\
+
+Por ejemplo, si se tienen una serie de números y se desean imprimir solo los números pares se puede dar la siguiente solución (hay otras soluciones posibles, pero se utiliza esta para propositos de ejemplo):\\
+
+\begin{pyglist} [language=python]
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+for num in [2,5,3,89,24,16,17,31]:
+    if num % 2 != 0:
+        continue
+    print num
+\end{pyglist}
+
+En este ejemplo se puede ver como \textbf{continue} sirve para no ejecutar la sentencia siguiente en el bucle. Si en el if se encuentra que num no es par, se pasa a la siguiente iteración, en caso contrario el if no hace nada y se imprime el número en la pantalla.
+
+
+\section{Ejercicios}
+
+Verifique los resultados de las siguientes expresiones:
+
+\begin{enumerate}
+\item True == True != False
+\item ($1 \ < \ 3$) and ($4 \ > \ 5$)   
+\item ($4 > 5$) or (10 != 10)
+\item (True or (2 == 1 + 4)) == False
+\end{enumerate}
+
+\begin{enumerate}
+\item Escriba un programa que lea un número flotante por teclado y muestre por pantalla el mensaje ``El número es negativo.'' sólo si el número es menor que cero.
+
+\item Escriba un programa que lea un número flotante por teclado y muestre por pantalla el mensaje ``El número es positivo.'' sólo si el número es mayor que cero.
+
+\item Escriba un programa que lea la edad de dos personas y diga quién es más joven, la primera o la segunda. Ten en cuenta que ambas pueden tener la misma edad. En tal caso, hazlo saber con un mensaje adecuado.
+
+\item Escriba un programa que, dado un número entero, muestre por pantalla el mensaje ``El número es par.'' cuando el número sea par y el mensaje ``El número es impar.'' cuando sea impar.
+
+\item Un capital de C euros a un interés del x por cien anual durante n años se convierte en $C*(1 + \frac{x}{100})^n$ euros. Diseñe un programa Python que solicite la cantidad C, el interés x y el número de años n y calcule el capital final sólo si x es una cantidad positiva.
+
+\item Escriba un programa que lea dos números de la pantalla y devuelva el mayor de ambos, si ambos son iguales debe escribir ``Ambos números son iguales''.
+
+\item Escribe un programa que calcule el máximo de 5 números enteros.
+
+\item Escribe un programa que, dado un número real que debe representar la calificación numérica de un examen, proporcione la calificación cualitativa correspondiente al número dado. La calificación cualitativa será una de las siguientes: ``Jalado'' (nota menor que 10.5), ``Aprobado'' (nota mayor o igual que 10.5, pero menor que 15), ``Notable'' (nota mayor o igual que 15, pero menor que 17), ``Sobresaliente'' (nota mayor o igual que 17, pero menor que 20), ``Matrícula de Honor'' (nota 20).
+
+\item Implementa un programa que muestre todos los múltiplos de 6 entre 6 y 150, ambos inclusive.
+
+\item Implementa un programa que muestre todos los múltiplos de n entre n y m * n, ambos inclusive, donde n y m son números introducidos por el usuario.
+
+\item Implementa un programa que muestre todos los números potencia de 2 entre 20 y 230, ambos inclusive.
+
+\item Escriba un programa que calcule $ \sum_{i=n}^{m} i$ donde n y m son números enteros que deberá introducir el usuario por teclado.
+
+\item Modifica el programa anterior para que si n > m, el programa no efectúe ningún cálculo y muestre por pantalla un mensaje que diga que n debe ser menor o igual que m.
+
+\item El factorial de n se denota con n!, escriba un programa que pida el valor de n y muestre por pantalla el resultado de
+calcular n!.
+
+\item Escriba un programa que muestre la tabla de multiplicar de un número introducido por teclado por el usuario.
+
+\item Escribe un programa que muestre, en líneas independientes, todos los números pares comprendidos entre 0 y 200 (ambos inclusive).
+
+\item Escribe un programa que muestre, en líneas independientes y en orden inverso, todos los números pares comprendidos entre 0 y 200 (ambos inclusive).
+
+\item Escribe un programa que muestre los números pares positivos entre 2 y un número cualquiera que introduzca el usuario por teclado.
+
+\item Escribe un programa que pida el valor de dos enteros n y m y calcule el sumatorio de todos los números pares comprendidos entre ellos (incluyéndolos en el caso de que sean pares).
+
+\item Escribe un programa que calcule el máximo común divisor (mcd) de dos enteros positivos. El mcd es el número más grande que divide exactamente a ambos números.
+
+\item Escribe un programa que vaya leyendo números y mostrándolos por pantalla hasta que el usuario introduzca un número negativo. En ese momento, el programa mostrará un mensaje de despedida y finalizará su ejecución.
+
+\item Escribe un programa que vaya leyendo números hasta que el usuario introduzca un número negativo. En ese momento, el programa mostrará por pantalla el número mayor de cuantos ha visto.
+\end{enumerate}
+
+
+
+
+
+

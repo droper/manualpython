@@ -1,0 +1,399 @@
+\section{Decoradores}
+
+Los decoradores (decorators) son una característica avanzada de Python donde una función tiene la capacidad de modificar otras funciones. Para entender los decoradores, primero se hará una revisión de otros conceptos de Python.
+
+\subsection{Ámbito}
+
+En Python las funciones crean un ámbito cada vez que son llamadas, cada fuhción tiene su propio espacio de nombres (namespace). Esto significa que cuando dentro de una función se llama a una variable, esta se busca primero en la función.\\
+
+\begin{pyglist} [language=python]
+>>> a = "Variable global"
+>>> def func1():
+...     print locals()
+... 
+>>> print globals()
+{'a': 'Variable glonal', 'func1': <function func1 at 0xb73dabc4>, 
+'__builtins__': <module '__builtin__' (built-in)>, 
+'__package__': None, '__name__': '__main__', '__doc__': None}
+>>> func1()
+{}
+>>> 
+\end{pyglist}
+
+Dentro de una función se puede acceder a las variables globales siempre y cuando no haya otra variable del mismo nombre.\\
+
+\begin{pyglist} [language=python]
+>>> cadena_a = "Variable global"
+>>> def func1():
+...     print cadena_a
+... 
+>>> func1()
+Variable global
+>>> 
+\end{pyglist}
+
+En este ejemplo, al no encontrar Python una variable local cadena\_a, utiliza la variable global. En cambio si se asigna la variable dentro de la función, se crea una nueva variable cuyo ámbito es func1().\\
+
+\begin{pyglist} [language=python]
+>>> cadena_a = "Variable global"
+>>> def func1():
+...     cadena_a = 'text1'
+... 
+>>> def func1():
+...     cadena_a = 'prueba'
+...     print locals()
+... 
+>>> func1()
+{'cadena_a': 'prueba'}
+>>> cadena_a
+'Variable global'
+>>> 
+\end{pyglist}
+
+\subsection{Vida de una variable}
+
+Las variables no solo viven en un espacio de nombres, también tienen tiempo de vida.\\
+
+\begin{pyglist} [language=python]
+>>> def func1():
+...     x = 1
+... 
+>>> func1()
+>>> print x
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'x' is not defined
+>>> 
+\end{pyglist}
+
+Una vez la función es ejecutada, las variables locales desaparecen y ya no hay forma alguna de volver a invocarlas.
+
+\subsection{Argumentos y parámetros de una función}
+
+En una función los parámetros son variables locales: \\
+
+\begin{pyglist} [language=python]
+>>> def func1(x):
+...     print locals()
+>>> func1(1)
+{'x': 1}
+\end{pyglist}
+
+Además, hay varias formas de definir los parámetros de una función y pasarle argumentos.\\
+
+\begin{pyglist} [language=python]
+>>> def foo(x, y=0):
+...     return x - y
+>>> foo(3, 1)
+2
+>>> foo(3)
+3
+>>> foo()
+Traceback (most recent call last):
+  ...
+TypeError: foo() takes at least 1 argument (0 given)
+>>> foo(y=1, x=3)
+2
+\end{pyglist}
+
+Como se puede ver y recordar del capítulo 4, existen dos formas de pasar los argumentos, por la posición y como par clave=valor.
+
+\subsection{Funciones anidadas}
+
+Este un concepto que no se ha tratado antes en este curso. En Python se pueden crear funciones dentro de funciones y todas las reglas sobre ámbito de las variables funcionan.\\
+
+\begin{pyglist} [language=python]
+>>> def outer():
+...     x = 1
+...     def inner():
+...         print x
+...     inner() # 2
+...
+>>> outer()
+1
+\end{pyglist}
+
+En la función \textit{inner()} se imprime la variable x y como no existe en el ámbito local, se busca en el ámbito superior, la función \textit{outer()}.
+
+\subsection{Las funciones son objetos}
+
+Como ya se ha estudiado antes, todo en Python es un objeto, incluyendo las funciones y clases, entre otras. Una variable puede apuntar a una función como apuntaría a una lista o un diccionario.\\
+
+\begin{pyglist} [language=python]
+>>> def add(x, y):
+...     return x + y
+>>> def sub(x, y):
+...     return x - y
+>>> def apply(func, x, y): # 1
+...     return func(x, y) # 2
+>>> apply(add, 2, 1) # 3
+3
+>>> apply(sub, 2, 1)
+1
+\end{pyglist}
+
+No solo se pueden pasar funciones como argumentos, sino devolver funciones desde una función:\\
+
+\begin{pyglist} [language=python]
+>>> def outer():
+...     def inner():
+...         print "Inside inner"
+...     return inner
+...
+>>> foo = outer()
+>>> foo
+<function inner at 0x...>
+>>> foo()
+Inside inner
+\end{pyglist}
+
+Al igual que con las variables, las funciones se pueden asignar y devolver.
+
+\subsection{Closures}
+
+Si se modifica el ejemplo anterior se obtiene:\\
+
+\begin{pyglist} [language=python]
+>>> def outer():
+...     x = 1
+...     def inner():
+...         print x
+...     return inner
+>>> foo = outer()
+>>> foo.func_closure 
+(<cell at 0xb695ff44: int object at 0x8d842e0>,)
+\end{pyglist}
+
+A primera vista parece que la variable x es local a la función \textit{outer()} por lo que al llamarse la función \textit{inner()} al momento de hacer el retorno de \textit{outer()} debería desaparecer pero la variable se mantiene.\\
+
+Python soporta una funcionalidad llamada \textbf{function closures} que implica que funciones internas definidas en un ámbito no global recuerdan como eran sus namespaces al momento de su \textbf{definición}.\\
+
+Se puede hacer lo mismo no con una variable interna sino con un parámetro:\\
+
+\begin{pyglist} [language=python]
+>>> def outer(x):
+...     def inner():
+...         print x # 1
+...     return inner
+>>> print1 = outer(1)
+>>> print2 = outer(2)
+>>> print1()
+1
+>>> print2()
+2
+\end{pyglist}
+
+Está técnica por si sola es poderosa, desde una función \textit{outer()} se pueden construir funciones \textit{inner} y devolversas, pasándoles los parámetros que se deseen.
+
+\subsection{Decoradores}
+
+Un decorador es un ``callable'' que recibe una función como argumento y devuelve otra función.
+
+\begin{pyglist} [language=python]
+>>> def outer(some_func):
+...     def inner():
+...         print "before some_func"
+...         ret = some_func()
+...         return ret + 1
+...     return inner
+>>> def foo():
+...     return 1
+>>> decorated = outer(foo) 
+>>> decorated()
+before some_func
+2
+\end{pyglist}
+
+A la función \textit{outer} se le pasa un argumento \textit{some\_func}. Dentro de \textit{outer} hay una función \textit{inner} la cual imprime una cadena antes de ejecutar \textit{some\_func} y luego devolver su respuesta más 1, modificando así la salida de la función. Luego se pasa \textit{foo} a \textit{outer} y el resultado se asigna a \textit{decorated}.\\
+
+La variable \textit{decorated} es la versión ``decorada'' de \textit{foo} - es \textit{foo} más algo adicional. Es más, si el decorador fuera realmente útil, reemplazariamos \textit{foo} con su versión decorada:\\
+
+\begin{pyglist} [language=python]
+>>> foo = outer(foo)
+>>> foo()
+before some_func
+2
+>>> 
+\end{pyglist}
+
+Ahora todas las llamadas a \textit{foo} no obtendrían el original, sino la versión decorada.\\
+
+Para mostrar con más detalle se utilizará un ejemplo con objetos coordenada. Estos objetos serán pares x e y y se harán algunas operaciones con los objetos.
+
+\begin{pyglist} [language=python]
+>>> class Coordinate(object):
+...     def __init__(self, x, y):
+...         self.x = x
+...         self.y = y
+...     def __repr__(self):
+...         return "Coord: " + str(self.__dict__)
+>>> def add(a, b):
+...     return Coordinate(a.x + b.x, a.y + b.y)
+>>> def sub(a, b):
+...     return Coordinate(a.x - b.x, a.y - b.y)
+>>> one = Coordinate(100, 200)
+>>> two = Coordinate(300, 200)
+>>> add(one, two)
+Coord: {'y': 400, 'x': 400}
+\end{pyglist}
+
+Si además de sumar y restar se desea chequear que no pasen ciertos límites, por ejemplo mantener solo coordenadas positivas. Hasta ahora las operaciones son:\\
+
+\begin{pyglist} [language=python]
+>>> one = Coordinate(100, 200)
+>>> two = Coordinate(300, 200)
+>>> three = Coordinate(-100, -100)
+>>> sub(one, two)
+Coord: {'y': 0, 'x': -200}
+>>> add(one, three)
+Coord: {'y': 100, 'x': 0}
+\end{pyglist}
+
+Si se desea implementar límites se puede crear un decorador:\\
+
+\begin{pyglist} [language=python]
+>>> def wrapper(func):
+...     def checker(a, b):
+...         if a.x < 0 or a.y < 0:
+...             a = Coordinate(a.x if a.x > 0 else 0, a.y if a.y > 0 else 0)
+...         if b.x < 0 or b.y < 0:
+...             b = Coordinate(b.x if b.x > 0 else 0, b.y if b.y > 0 else 0)
+...         ret = func(a, b)
+...         if ret.x < 0 or ret.y < 0:
+...             ret = Coordinate(ret.x if ret.x > 0 else 0,  
+                                 ret.y if ret.y > 0 else 0)
+...         return ret
+...     return checker
+>>> add = wrapper(add)
+>>> sub = wrapper(sub)
+>>> sub(one, two)
+Coord: {'y': 0, 'x': 0}
+>>> add(one, three)
+Coord: {'y': 200, 'x': 100}
+\end{pyglist}
+
+Con el decorador las funciones se utilizan igual que antes solo que ahora devuelven sus valores en un límite. Si se desea, se puede hacer más obvia la aplicación del decorador mediante el símbolo @.\\
+
+En vez de hacer:\\
+
+\begin{pyglist} [language=python]
+>>> add = wrapper(add)
+\end{pyglist}
+
+Se puede ``decorar'' mediante el símbolo @ y el nombre del decorador:\\
+
+\begin{pyglist} [language=python]
+>>> @wrapper
+... def add(a, b):
+...     return Coordinate(a.x + b.x, a.y + b.y)
+\end{pyglist}
+
+Esta sintáxis no es diferente de reemplazar \textit{add} con la función retornada por \textit{wrapper}, solo se hace más explícito.
+
+\subsection{*args y *kwargs}
+
+Los decoradores también se pueden utilizar con funciones que reciban una indeterminada cantidad de parámetros, así el decorador se puede aplicar sobre mayor cantidad de funciones.\\
+
+\begin{pyglist} [language=python]
+>>> def one(*args):
+...     print args # 1
+>>> one()
+()
+>>> one(1, 2, 3)
+(1, 2, 3)
+>>> def two(x, y, *args): # 2
+...     print x, y, args
+>>> two('a', 'b', 'c')
+a b ('c',)
+\end{pyglist}
+
+En caso que se pase una lista o tupla, sus elementos pueden ser utilizados como argumentos si es que se coloca un * delante.\\
+
+\begin{pyglist} [language=python]
+>>> def add(x, y):
+...     return x + y
+>>> lst = [1,2]
+>>> add(lst[0], lst[1]) # 1
+3
+>>> add(*lst) # 2
+3
+\end{pyglist}
+
+También se pueden utulizar diccionarios para pasar pares clave=valor como argumentos:\\
+
+\begin{pyglist} [language=python]
+>>> def foo(**kwargs):
+...     print kwargs
+>>> foo()
+{}
+>>> foo(x=1, y=2)
+{'y': 2, 'x': 1}
+\end{pyglist}
+
+Y también:\\
+
+\begin{pyglist} [language=python]
+>>> dct = {'x': 1, 'y': 2}
+>>> def bar(x, y):
+...     return x + y
+>>> bar(**dct)
+3
+\end{pyglist}
+
+\subsection{Decoradores más genericos}
+
+Utilizando los argumentos de número variable se pueden escribir decoradores más genéricos, como un decorador que escriba las variables pasadas a una función antes de mostrar su resultado:\\
+
+\begin{pyglist} [language=python]
+>>> def logger(func):
+...     def inner(*args, **kwargs): 
+...         print "Arguments were: %s, %s" % (args, kwargs)
+...         return func(*args, **kwargs)
+...     return inner
+\end{pyglist}
+
+La función inner recibe una cantidad indeterminada de a y se los pasa a la función \textbf{func} pasada como argumentos. Esto permite decorar cualquier función, sin importar los parámetros que reciba:\\
+
+\begin{pyglist} [language=python]
+>>> @logger
+... def foo1(x, y=1):
+...     return x * y
+>>> @logger
+... def foo2():
+...     return 2
+>>> foo1(5, 4)
+Arguments were: (5, 4), {}
+20
+>>> foo1(1)
+Arguments were: (1,), {}
+1
+>>> foo2()
+Arguments were: (), {}
+2
+\end{pyglist}
+
+\newpage
+
+\section{Ejercicios}
+
+\begin{enumerate}
+
+\item Escriba un decorador que imprima un mensaje antes y después de ejecutar una función.
+
+\item Crea un decorador que imprima los argumentos de la función y el retorno de cada llamada a la función. Debe soportar una cantidad indeterminada de argumentos posicionales y por nombre. Su uso debe ser como sigue:
+
+\begin{pyglist} [language=python]
+>>> @logged
+... def func(*args):
+...     return 3 + len(args)
+>>> func(4, 4, 4)
+you called func(4, 4, 4)
+it returned 6
+6
+\end{pyglist}
+
+\item Cree una clase FuncionesAritméticas que tenga una lista de números como atributo y funciones que implementen las cuatro operaciones sobre los elementos de dicha lista. Agreguele un decorador a cada función de manera tal que antes de mostrar el resultado imprima los elementos presentes en la lista.
+
+\item Agregue un decorador a una función que imprima un mensaje de ``Hola'' al llamar a una función. Luego agregue otro decorador que diga ``¿Cómo estás?'' luego del mensaje del anterior decorador.
+
+\end{enumerate}

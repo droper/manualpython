@@ -1,0 +1,233 @@
+\section{Las Excepciones}
+
+Las excepciones son eventos que pueden alterar el flujo de un programa. En Python las excepciones son lanzadas automáticamente cada vez que produce un error y pueden ser capturadas por el código del programador. Existen cuatro formas de procesar las excepciones, las que se estudiarán en el presente capítulo.\\
+
+Se utilizan excepciones para manejar eventos no necesariamente contemplados en el flujo del programa. Por ejemplo si un programa se hace cargo de la comunicación con un web service en un servidor, si se cae la conexión debe haber una excepción que gestione esa eventualidad y cierre de forma ordenada las tareas que se estaban llevando a cabo.\\
+
+El manejador de excepciones es la sentencia \textbf{try}, la cual deja una ``marca'' y algún código. En algún punto del programa se produce una condición que levanta una excepción y es llamado el código que se dejo para el caso de una excepción.
+
+\subsection{Captura de excepciones}
+
+Una excepción se genera cuando se comete algún error en el flujo del programa:\\
+
+\begin{pyglist} [language=python]
+>>> def fetcher(obj, index):
+...     return obj[index]
+... 
+>>> x = 'spam'
+>>> fetcher(x, 3)
+'m'
+>>> fetcher(x, 4)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 2, in fetcher
+IndexError: string index out of range
+>>> 
+\end{pyglist}
+
+El mensaje impreso es una excepción del tipo \textbf{IndexError} y además se ve el stack del programa que genero el error. Si se desea hacer algo diferente al manejo por defecto de excepciones de Python se utiliza \textbf{try/except}.\\
+
+\begin{pyglist} [language=python]
+>>> try:
+...     fetcher(x, 4)
+... except IndexError:
+...     print 'got exception'
+... 
+got exception
+>>> 
+\end{pyglist}
+
+En el segundo ejemplo, Python salta hacia el manejo de excepción definido por el programador, y no interrumpe la ejecución del programa. En ejemplos reales, no solo se captura la excepción sino se ejecuta código para resolver el problema presentado.\\
+
+Se pueden capturar diversas excepciones en un try y agregar una sentencia \textbf{else} para el caso de que no se produzca ninguna excepción.\\
+
+Las formas posibles de la sentencia try son:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|} \hline
+\textbf{Forma}	               &            \textbf{Interpretación}     \\ \hline
+except:                        &            Captura las excepciones que no estén en otro except.\\ \hline
+except name:                   &            Captura una excepción específica.\\ \hline
+except name as value:          &            Captura la excepción y la asigna a una variable.\\ \hline
+except (name1, name2):         &            Captura cualquiera de las excepciones listadas.\\ \hline
+except (name1, name2) as value: &           Captura cualquiera y la asigna a una variable.\\ \hline
+else:                          &            Se ejecuta si no se presenta ninguna excepción.\\ \hline
+finally:                       &            Se ejecuta así se presenten o no excepciones.\\ \hline
+\end{tabular}
+\end{table}
+
+Otro ejemplo:\\
+
+\begin{pyglist} [language=python]
+def imprimir(x, y):
+    print x + y
+
+try:
+    imprimir([0, 1, 2], 'spam')
+except TypeError: 
+    print 'Hello world!'
+    print 'resuming here'
+\end{pyglist}
+
+Un ejemplo final, de mayores proporciones:\\
+
+\begin{pyglist} [language=python]
+# File try2.py (Python 3.X + 2.X)
+
+sep = '-' * 45 + '\n'
+print(sep + 'EXCEPTION RAISED AND CAUGHT')
+
+try:
+    x = 'spam'[99]
+except IndexError:
+    print('except run')
+finally:
+    print('finally run')
+    print('after run')
+
+print(sep + 'NO EXCEPTION RAISED')
+try:
+    x = 'spam'[3]
+except IndexError:
+    print('except run')
+finally:
+    print('finally run')
+    print('after run')
+
+print(sep + 'NO EXCEPTION RAISED, WITH ELSE')
+try:
+    x = 'spam'[3]
+except IndexError:
+    print('except run')
+else:
+    print('else run')
+finally:
+    print('finally run')
+    print('after run')
+
+
+print(sep + 'EXCEPTION RAISED BUT NOT CAUGHT')
+try:
+    x = 1 / 0
+except IndexError:
+    print('except run')
+finally:
+    print('finally run')
+    print('after run')
+\end{pyglist}
+  
+
+\subsection{Levantamiento de excepciones}
+
+En Python no solo se pueden capturar excepciones producidas por fallos en el programa, sino también ser levantadas a propósito por el programa utilizando la sentencia \textbf{raise}.\\
+
+\begin{pyglist} [language=python]
+>>> try:
+...     raise IndexError
+... except IndexError:
+...     print 'got exception'
+... 
+got exception
+>>> 
+\end{pyglist}
+
+La sentencia raise en caso no sea manejada, genera una excepción que es tratada como todas las demás por Python.\\
+
+\begin{pyglist} [language=python]
+>>> raise IndexError
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+IndexError
+>>> 
+\end{pyglist}
+
+\subsection{Excepciones definidas por el usuario}
+
+Se pueden crear nuevas excepciones adicionales a las predefinidas por Python heredando una clase de la clase \textbf{Exception}. \\
+
+\begin{pyglist} [language=python]
+>>> class AlreadyGotOne(Exception): pass 
+... 
+>>> def grail(): 
+...     raise AlreadyGotOne() 
+... 
+>>> try:
+...     grail()
+... except AlreadyGotOne:
+...     print 'got exception'
+... 
+got exception
+>>> 
+\end{pyglist}
+
+Al ser clases las excepciones, pueden ser heredadas y modificadas:\\
+
+\begin{pyglist} [language=python]
+>>> class NuevaExcepcion(Exception):
+...     def __str__(self): return 'Esta es una nueva excepcion.'
+... 
+>>> raise NuevaExcepcion
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+__main__.NuevaExcepcion: Esta es una nueva excepcion.
+>>> 
+\end{pyglist}
+
+\subsection{Terminar acciones}
+
+Después de un bloque \textbf{try} puede ser incluida la sentencia \textbf{finally}, la cuál se ejecuta siempre después del código incluido en el try así se levante o no una excepción. Es útil debido a que se va a ejecutar sin importar si el programa cometió o no un error, aportando así robustez a la ejecución.\\
+
+\begin{pyglist} [language=python]
+>>> x = 'spam'
+>>> def func():
+...     try:
+...         fetcher(x, 4)
+...     finally:
+...         print 'after fetch'
+...     print('after try?')
+... 
+>>> func()
+after fetch
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 3, in func
+  File "<stdin>", line 2, in fetcher
+IndexError: string index out of range
+>>> 
+\end{pyglist}
+
+Debido al error, no se tiene el mensaje ``after try'' porque después del error el programa termina, pero si se ejecuta la sentencia incluida en el bloque finally. Si el programa no cometiera un error, ambas sentencias print se ejecutarían.\\
+
+Se utiliza el \textbf{except} para capturar errores y \textbf{finally} para que estos errores no eviten la ejecución de código necsario para el programa. Por ejemplo, si el programa se comunica con un servidor del cuál recibe data, en caso la conexión se corte se utiliza la sentencia except para capturar el error y guardarlo en un log y \textbf{finally} para guardar la data recibida hasta el momento y cerrar de forma ordenada el programa.\\
+
+
+
+\subsection{Uso de las excepciones}
+
+En Python las excepciones son utilizadas sobre todo para:
+
+\begin{itemize}
+\item Gestión de errores: al producirse un problema Python levanta una excepción y si esta es ignorada por el programa, Python reacciona deteniendo la ejecución e imprimiendo el error.
+
+\item Notificación de eventos: se pueden utilizar las excepciones para definir que hacer en caso de que se produzca un evento.
+
+\item Manejo de casos especiales.
+\end{itemize}
+
+
+\section{Ejercicios}
+
+\begin{enumerate}
+\item Escriba un programa que itere sobre una lista utilizando un rango superior a la cantidad de elementos de la lista. Cuando se produzca el error, este debe ser capturado por una excepción e impresos sus datos.
+
+\item Del problema anterior, agregue una sentencia \textbf{finally} que imprima la cantidad de elementos de la lista.
+
+\item Escriba un programa que genere tres excepciones: IndexError, NameError y TypeError. Capture las tres excepciones e imprima los datos.
+
+\item En el ejercicio anterior, levante una excepción adicional (mediante raise) y captúrela mediante un except genérico.
+
+\item Escribe una función \textit{ups()} que levante un error de tipo IndexError cuando es llamada. Escriba otra función desde la que se llame a \textit{ups()} dentro de una estructura try/except y capture el error. 
+
+\item Implemente una excepción llamada MiError la cual debe tener un atributo data cuyo valor sea 42. Esta excepción será levantada desde la función \textit{ups()} y en la función que la llama la excepción debe ser capturada y el dato mostrado.
+\end{enumerate}

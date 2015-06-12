@@ -1,0 +1,491 @@
+\section{Gestión de archivos de texto plano}
+
+En todo sistema operativo hay unidades de almacenamiento con nombre, también llamados archivos. Mediante la función \textit{open()} se abre un archivo y se accede a este mediante las funciones que Python provee para el manejo de archivos.\\
+
+\begin{table}[h]
+\begin{tabular}{|c|c|c|} \hline
+\textbf{Operación}                           &     \textbf{Significado}  \\ \hline
+output = open('/home/pedro/spam', 'w')       &    Crear archivo de escritura. \\ \hline
+input = open('data', 'r')                    &    Crear archivo de lectura ('r' significa read)\\ \hline
+input = open('data')                         &    Igual que la anterios ('r' es el default)\\ \hline
+aString = input.read()                       &    Leer un archivo en una sola cadena\\ \hline
+aString = input.read(N)                      &    Leer hasta N caracteres(o bytes) en una cadena\\ \hline
+aString = input.readline()                   &    Leer la siguiente línea  en una cadena\\ \hline
+aList = input.readlines()                    &    Leer un archivo entero en una lista de cadenas.\\ \hline
+output.write(aString)                        &    Escribe una cadena de caracteres en un archivo\\ \hline
+output.writelines(aList)                     &    Escribe las cadenas de una lista en un archivo\\ \hline
+output.close()                               &    Cierre del archivo \\ \hline
+output.flush()                               &    Grabar el buffer en el disco sin cerrar\\ \hline
+anyFile.seek(N)                              &    Cambiar la posición en el archivo a N.\\ \hline
+for line in open('data'): use line           &    Leer línea por línea.\\ \hline
+codecs.open('f.txt', encoding='utf8')        &    Python 2.X Unicode archivos de texto (cadenas unicode).\\ \hline
+open('f.bin', 'rb')                          &    Python 2.X bytes files (cadenas str).\\ \hline
+\end{tabular}
+\end{table}
+
+Para abrir un archivo se utiliza:\\
+
+\begin{pyglist} [language=python]
+archivo = open(nombre\_archivo, modo)
+archivo.metodo()
+\end{pyglist}
+
+El primer parámetro debe incluir tanto el nombre como la ruta a la ubicación del archivo, si no se incluye ruta, Pytho interpreta que está ubicado en el mismo directorio. El parámetro modo es la forma en que se abre el archivo y puede ser ``r'' para lectura, ``w'' para escritura y ``a'' para adicionar al final del texto. Agregando un + en el modo se abre el archivo para lectura y escritura.\\
+
+Una vez que se obtiene un objeto archivo, se pueden llamar sus métodos para leer o escribir del archivo.\\
+
+\begin{pyglist} [language=python]
+>>> myfile = open('myfile.txt', 'w')
+>>> myfile.write('hello text file\n')
+>>> myfile.write('goodbye text file\n')
+>>> myfile.close()
+>>> myfile = open('myfile.txt')
+>>> myfile.readline()
+'hello text file\n'
+>>> myfile.readline()
+'goodbye text file\n'
+>>> myfile.readline()
+''
+\end{pyglist}
+
+Si se quiere leer con una sola línea el contenido de un archivo:\\
+
+\begin{pyglist} [language=python]
+>>> open('myfile.txt').read() 
+'hello text file\ngoodbye text file\n'
+>>> print(open('myfile.txt').read()) 
+hello text file
+goodbye text file
+\end{pyglist}
+
+O si se desea iterar línea por línea:\\
+
+\begin{pyglist} [language=python]
+>>> for line in open('myfile.txt'):
+...     print(line)
+... 
+hello text file
+
+goodbye text file
+
+\end{pyglist}
+
+\subsection{Guardar Objetos}
+
+Para guardar objetos de diversos tipos en archivos de texto, deben ser convertidos en cadenas y luego guardados.\\
+
+\begin{pyglist} [language=python]
+>>> X, Y, Z = 43, 44, 45 
+>>> S = 'Spam' 
+>>> D = {'a': 1, 'b': 2} 
+>>> L = [1, 2, 3] 
+>>> 
+>>> F = open('datafile.txt', 'w' )
+>>> F.write(S + '\n') 
+>>> F.write('%s,%s,%s\n' % (X, Y, Z)) 
+>>> F.write(str(L) + '@' + str(D) + '\n') 
+>>> F.close()
+\end{pyglist}
+
+Luego de crear un archivo, se puede abrir y leer el contenido en una cadena.\\
+
+\begin{pyglist} [language=python]
+>>> chars = open('datafile.txt').read()
+>>> chars
+"Spam\n43,44,45\n[1, 2, 3]@{'a': 1, 'b': 2}\n"
+>>> print chars
+Spam
+43,44,45
+[1, 2, 3]@{'a': 1, 'b': 2}
+\end{pyglist}
+
+Para reconvertir la data guardada nuevamente en objetos Python se requiere hacerlo de forma manual.\\
+
+\begin{pyglist} [language=python]
+>>> F = open('datafile.txt')
+>>> line = F.readline()
+>>> line
+'Spam\n'
+>>> line.rstrip()
+'Spam'
+>>> 
+\end{pyglist}
+
+Para la primera línea se utiliza el método rstrip para eliminar el caracter de nueva línea. En caso hubieran habido espacios en blanco también los hubiera eliminado.\\
+
+Luego se cogen la siguiente línea y se extraen los números de ella.\\
+
+\begin{pyglist} [language=python]
+>>> line = F.readline()
+>>> line
+'43,44,45\n'
+>>> parts = line.split(',')
+>>> parts
+['43', '44', '45\n']
+\end{pyglist}
+
+Se tiene la lista con los números pero aún son cadenas, por lo que se necesita convertirlos a números:\\
+
+\begin{pyglist} [language=python]
+>>> numbers = [int(P) for P in parts]
+>>> numbers
+[43, 44, 45]
+\end{pyglist}
+
+Para convertir la lista y el diccionario de la tercera línea del archivo se utilizará \textbf{eval} una función que trata a una cadena de texto que ingresa como código ejecutable.\\
+
+\begin{pyglist} [language=python]
+>>> line = F.readline()
+>>> line
+"[1, 2, 3]@{'a': 1, 'b': 2}\n"
+>>> parts = line.split('@')
+>>> parts
+['[1, 2, 3]', "{'a': 1, 'b': 2}\n"]
+>>> objects = [eval(P) for P in parts]
+>>> objects
+[[1, 2, 3], {'a': 1, 'b': 2}]
+\end{pyglist}
+
+\subsection{La librería Pickle}
+
+Usar \textbf{eval} es algo arriesgado, es una función que va a ejecutar cualquier código que se le pase, sin importar lo que este haga. Si se desea guardar objetos Python en un archivo, la librería Pickle es lo ideal.\\
+
+\begin{pyglist} [language=python]
+>>> import pickle
+>>> D = {'a': 1, 'b': 2}
+>>> F = open('datafile.pkl', 'w')
+>>> pickle.dump(D, F)
+>>> F.close()
+>>> 
+>>> F = open('datafile.pkl', 'r')
+>>> E = pickle.load(F)
+>>> E
+{'a': 1, 'b': 2}
+\end{pyglist}
+
+El módulo \textbf{pickle} lleva a cabo lo que se conoce como serialización de objetos, convertir objetos a y desde cadenas de bytes. Se puede intentar leer el diccionario de la forma habitual pero no habría mucho por ver.\\
+
+\begin{pyglist} [language=python]
+>>> open('datafile.pkl', 'r').read()
+"(dp0\nS'a'\np1\nI1\nsS'b'\np2\nI2\ns."
+\end{pyglist}
+
+\subsection{JSON}
+
+Pickle utiliza un formato propio de Python y optimizado para perfomance durante años. JSON es un formato relativamente nuevo y muy utilizado para intercambiar información. Se puede también guardar objetos en formato JSON, en especial diccionarios y listas, cuya sintaxis se parece a la de JSON. Por ejemplo un diccionario Python con estructuras de datos anidadas es muy similar a la data de JSON.\\
+
+\begin{pyglist} [language=python]
+>>> name = dict(first='Bob', last='Smith')
+>>> rec = dict(name=name, job=['dev', 'mgr'], age=40.5)
+>>> rec
+{'age': 40.5, 'job': ['dev', 'mgr'], 'name': {'last': 'Smith', 'first': 'Bob'}}
+\end{pyglist}
+
+Para convertirlo a JSON y de JSON de vuelta a Python:\\
+
+\begin{pyglist} [language=python]
+>>> import json
+>>> json.dumps(rec)
+'{"age": 40.5, "job": ["dev", "mgr"], "name": {"last": "Smith", "first": "Bob"}}'
+>>> s = json.dumps(rec)
+>>> s
+'{"age": 40.5, "job": ["dev", "mgr"], "name": {"last": "Smith", "first": "Bob"}}'
+>>> O = json.loads(s)
+>>> O
+{u'age': 40.5, u'job': [u'dev', u'mgr'], 
+u'name': {u'last': u'Smith', u'first': u'Bob'}}
+>>> O == rec
+True
+\end{pyglist}
+
+Se puede guardar la data en JSON en archivos:\\
+
+\begin{pyglist} [language=python]
+>>> json.dump(rec, fp=open('testjson.txt', 'w'), indent=4)
+>>> print(open('testjson.txt').read())
+{
+    "age": 40.5, 
+    "job": [
+        "dev", 
+        "mgr"
+    ], 
+    "name": {
+        "last": "Smith", 
+        "first": "Bob"
+    }
+}
+>>> P = json.load(open('testjson.txt'))
+>>> P
+{u'age': 40.5, u'job': [u'dev', u'mgr'], 
+u'name': {u'last': u'Smith', u'first': u'Bob'}}
+\end{pyglist}
+
+En Python también se puede utilizar el formato csv, así como xml, pero por razones de espacio no vamos a verlo en el presente curso.
+
+\section{MySQL}
+
+La persistencia de data utilizando bases de datos relacionales en Python tienen amplio soporte. Se puede acceder a las bases de datos más conocidas como PostgreSQL, Oracle, MySQL, SQLite entre otras a través de un API consistente, con pocas variantes entre la forma de acceder a una u otra base de datos.\\
+
+En Python el acceso a las bases de datos está basado en tres conceptos clave:\\
+
+\begin{itemize}
+\item \textit{Objetos de conexión}: Representa una conexión a la base de datos, son la interfaz a las operaciones, proveen detalles de implementación y generan objetos cursor.
+
+\item \textit{Objetos cursor}: Representa una sentencia SQL enviada como cadena y puede ser utilizada para acceder y moverse por los resultados de la sentencia.
+
+\item \textit{Resultados de las consultas}: Son retornados a Python como secuencias anidadas (listas de tuplas por ejemplo), representando tablas o registros. Dentro de los registros, los valores de cada columna son objetos de Python como cadenas, enteros, flotantes, etc. 
+\end{itemize}
+
+Para conectarse a un servidor MySQL se sigue el siguiente código:\\
+
+\begin{pyglist} [language=python]
+>>> from MySQLdb import Connect
+>>> conn = Connect(host='localhost', user='root', passwd='qwerty')
+\end{pyglist}
+
+Después de la conexión hay una variedad de operaciones que se pueden llevar a cabo como:\\
+
+\begin{pyglist} [language=python]
+conn.close()
+conn.commit()
+conn.rollback()
+\end{pyglist}
+
+Una de las cosas más útiles que s epueden hacer con una conexión es crear un objeto cursor:\\
+
+\begin{pyglist} [language=python]
+cursobj = connobj.cursor()
+\end{pyglist}
+
+Los objetos cursor tienen algunos métodos (como \textit{callproc} para llamar a un procedimiento almacenado) pero el más importante es \textbf{execute}:\\
+
+\begin{pyglist} [language=python]
+cursobj.execute(sqlstring [, parameters])
+\end{pyglist}
+
+El método \textbf{execute} puede servir para ejecutar diversos tipos de sentencias SQL como CREATE, UPDATE, INSERT, SELECT, etc.\\
+
+Después de ejecutar el método \textbf{execute} el atributo \textbf{rowcount} del cursor da el número de filas modificadas o consultadas y el atributo \textbf{description} da los nombres de las columnas y sus tipos luegos de una consulta. Para completar la operación en consultas se llama a uno de los métodos \textbf{fetch}.\\
+
+\begin{pyglist} [language=python]
+tuple = cursobj.fetchone()
+listoftuple = cursobj.fetchmany([size])
+listoftuple = cursobj.fetchall()
+\end{pyglist}
+
+\subsection{Un breve tutorial}
+
+El código utilizado en el ejemplo presentado es muy similar, a excepción de la conexión, al código utilizado para acceder a otros gestores de bases de datos. En general solo es necesario cambiar la conexión y el resto del código puede seguir igual al cambiar de gestor.\\
+
+Para conectarse:\\
+
+\begin{pyglist} [language=python]
+>>> from MySQLdb import Connect
+>>> conn = Connect(host='localhost', user='root', passwd='qwerty')
+\end{pyglist}
+
+Se empieza importando la librería que conecta a MySQL y estableciendo una conexión.\\
+
+Se crea un cursor para enviar sentencias SQL al servidor de bases de datos y se envía una para crear la primera tabla:\\
+
+\begin{pyglist} [language=python]
+>>> curs = conn.cursor()
+>>> use_bd = 'USE test'
+>>> curs.execute(use_bd)
+>>> tblcmd = 'create table people (name char(30), job char(10), pay int(4))'
+>>> curs.execute(tblcmd)
+\end{pyglist}
+
+Se crea un cursor, se escoge que BD usar y luego se crea una tabla con tres columnas.\\
+
+Para agregar registros se utiliza una sentencia INSERT:\\
+
+\begin{pyglist} [language=python]
+>>> curs.execute('insert into people values (%s, %s, %s)', ('Bob', 'dev', 5000))
+1L
+>>> curs.rowcount
+1L
+\end{pyglist}
+
+La sentencia inserta agrega un registro a la tabla people y rowcount devuelve cuantos registros se han producido o afectado por la última sentencia.\\
+
+Para insertar múltiples registros con una sola sentencia se utiliza el método \textit{executemany} y una secuencia de registros a insertar (p. ej una lista de listas). Este método funciona como se si se llamara a execute por cada lista ingresada.\\
+
+\begin{pyglist} [language=python]
+>>> curs.executemany('insert into people values (%s, %s, %s)',
+...           [ ('Sue', 'mus', '70000'),
+...             ('Ann', 'mus', '60000')])
+2L
+\end{pyglist}
+
+Se puede hacer lo mismo mediante un for:\\
+
+\begin{pyglist} [language=python]
+>>> rows = [['Tom', 'mgr', 100000],
+...         ['Kim', 'adm', 30000],
+...         ['pat', 'dev', 90000]]
+>>> 
+>>> for row in rows:
+...     curs.execute('insert into people values (%s , %s, %s)', row)
+... 
+1L
+1L
+1L
+>>> conn.commit()
+\end{pyglist}
+
+Para que todos los cambios hechos se guarden en la BD, se utiliza el método commit del objeto conexión. En caso no se llame, cuando se cierre la conexión (mediante \textit{conn.close()} o cuando se termine el programa) se perderán todos los cambios enviados.\\
+
+\subsubsection{Ejecutar consultas}
+
+Luego de agregar 6 registros en la tabal people, se pueden ejecutar consultas para verlos.\\
+
+\begin{pyglist} [language=python]
+>>> curs.execute('select * from people')
+6L
+>>> curs.fetchall()
+(('Bob', 'dev', 5000L), ('Sue', 'mus', 70000L), ('Ann', 'mus', 60000L), 
+('Tom', 'mgr', 100000L), ('Kim', 'adm', 30000L), ('pat', 'dev', 90000L))
+\end{pyglist}
+
+Se puede también usar un for:\\
+
+\begin{pyglist} [language=python]
+>>> curs.execute('select * from people')
+6L
+>>> for row in curs.fetchall():
+...     print row
+... 
+('Bob', 'dev', 5000L)
+('Sue', 'mus', 70000L)
+('Ann', 'mus', 60000L)
+('Tom', 'mgr', 100000L)
+('Kim', 'adm', 30000L)
+('pat', 'dev', 90000L)
+\end{pyglist}
+
+Debido a que son tuplas se puede hacer lo siguiente:\\
+
+\begin{pyglist} [language=python]
+>>> curs.execute('select * from people')
+6L
+>>> for (name, job, pay) in curs.fetchall():
+...     print(name, ':', pay)
+... 
+('Bob', ':', 5000L)
+('Sue', ':', 70000L)
+('Ann', ':', 60000L)
+('Tom', ':', 100000L)
+('Kim', ':', 30000L)
+('pat', ':', 90000L)
+\end{pyglist}
+
+Se puede utilizar \textit{fetchone} para retornar registro por registro:\\
+
+\begin{pyglist} [language=python]
+>>> curs.execute('select * from people')
+6L
+>>> while True:
+...     row = curs.fetchone()
+...     if not row: break
+...     print row
+... 
+('Bob', 'dev', 5000L)
+('Sue', 'mus', 70000L)
+('Ann', 'mus', 60000L)
+('Tom', 'mgr', 100000L)
+('Kim', 'adm', 30000L)
+('pat', 'dev', 90000L)
+\end{pyglist}
+
+Cuando se hace \textit{fetchall} se agota la tabla resultante, al igual que cuando se llega al final mediante \textit{fetchone}, por lo que se debe utilizar \textit{execute} de nuevo para tener otro set de registros con el que trabajar.\\
+
+Además de INSERT y SELECT se pueden ejecutar UPDATE\\
+
+\begin{pyglist} [language=python]
+>>> curs.execute('update people set pay=%s where pay <= %s', [65000, 60000])
+3L
+>>> curs.execute('select * from people')
+6L
+>>> curs.fetchall()
+(('Bob', 'dev', 65000L), ('Sue', 'mus', 70000L), ('Ann', 'mus', 65000L),
+ ('Tom', 'mgr', 100000L), ('Kim', 'adm', 65000L), ('pat', 'dev', 90000L))
+\end{pyglist}
+
+Y DELETE:\\
+
+\begin{pyglist} [language=python]
+>>> curs.execute('delete from people where name = %s', ['Bob'])
+1L
+>>> curs.execute('delete from people where pay >= %s',(90000,))
+2L
+>>> curs.execute('select * from people')
+3L
+>>> curs.fetchall()
+(('Sue', 'mus', 70000L), ('Ann', 'mus', 65000L), ('Kim', 'adm', 65000L))
+>>> conn.commit()
+\end{pyglist}
+
+\subsubsection{Script de ejemplo}
+
+Este Script fue obtenido de \cite{Lutz2011}.
+
+\begin{pyglist} [language=python]
+from MySQLdb import Connect
+
+conn = Connect(host='localhost', user='root', passwd='qwerty')
+curs = conn.cursor()
+try:
+    curs.execute('drop database testpeopledb')
+except:
+    pass  # Did not exist
+
+curs.execute('create database testpeopledb')
+curs.execute('use testpeopledb')
+curs.execute('create table people (name char(30), job char(10), pay int(4))')
+curs.execute('insert people values (%s, %s, %s)', ('Bob', 'dev',
+50000))
+curs.execute('insert people values (%s, %s, %s)', ('Sue', 'dev',
+60000))
+curs.execute('insert people values (%s, %s, %s)', ('Ann', 'mgr',
+40000))
+curs.execute('select * from people')
+for row in curs.fetchall():
+    print(row)
+    
+curs.execute('select * from people where name = %s', ('Bob',))
+print(curs.description)
+colnames = [desc[0] for desc in curs.description]
+
+while True:
+    print('-' * 30)
+    row = curs.fetchone()
+    if not row: break
+    for (name, value) in zip(colnames, row):
+        print('%s => %s' % (name, value))
+    
+conn.commit()       # Save inserted records
+\end{pyglist}
+
+
+
+\section{Ejercicios}
+
+\begin{enumerate}
+\item Crear un programa que al ser ejecutado cree un archivo de texto que contenga el himno nacional.
+
+\item Crear un programa que lea el archivo del ejercicio anterior y lo imprima en pantalla.
+
+\item Escriba un programa que lea entradas del teclado y las escriba en un archivo, luego de recibir algo debe preguntar ``¿Desea ingresar otro texto (S/N)?'', si se ingresa S se sigue ingresando textos y si la respuesta es N se muestra el archivo en pantalla y termina el programa.
+
+\item Escriba un programa que guarde dos listas y dos diccionarios en diferentes líneas de un archivo.
+
+\item Recupere las listas y diccionarios del ejercicio anterior.
+
+\item Escriba un programa que cree una tabla Persona con los campos nombre, apellido paterno, apellido materno y DNI.
+
+\item Ingrese tres registros en la tabla anterior.
+
+\item Escriba un programa que cree uan tabla Persona como la de un ejercicio anterior pero le agregue un FK a una tabla Profesión. Llene la tabla Profesión con cuatro registros y la tabla Persona con 6 registros.
+\end{enumerate}
+

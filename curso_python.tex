@@ -1,0 +1,103 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Clases de Postgresql
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt,a4paper,oneside, openany]{book}
+\textheight=26cm
+\textwidth=18cm
+\topmargin=-2cm
+\oddsidemargin=-1cm
+\parindent=0mm
+
+\usepackage[utf8x]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{ucs}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{anyfontsize}
+\usepackage{float}
+\usepackage{textcomp}
+%Paquete verbments para obtener bonito código fuente
+\usepackage{verbments}
+
+\fvset{frame=single,framerule=1pt}
+\plset{language=python,texcl=true,style=vs,%
+captionfont=\sffamily\color{white}}
+
+\setcounter{chapter}{0}
+
+\pagestyle{plain}
+
+
+%--------------------------------------------------------------------------
+%titulo
+\title{ 
+ \begin{center}
+  {Python - Guia de clases}\\
+ \end{center}
+}
+
+\author{Ing. Pedro Muñoz del Rio\\
+        pmunoz@gmail.com}
+
+\date{Lima, Perú}
+
+\begin{document}
+
+\renewcommand{\baselinestretch}{1.5} %espacio entre lineas, 2 es doble espacio
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\listfigurename}{Lista de Gr\'aficos}
+\renewcommand{\chaptername}{Cap\'itulo}
+\renewcommand{\bibname}{Fuentes de Informaci\'on}
+\renewcommand{\figurename}{Gr\'afico}
+\renewcommand{\tablename}{Tabla}
+
+ \maketitle %despliega el titulo
+ 
+  \frontmatter  %Secciones del documento que van con numeros romanos en el indice 
+ 
+   \input{introduccion.tex} %Resumen y Abstract
+  
+ \tableofcontents %despliega el índice
+ \listoffigures   %Tabla de figuras
+      
+ \mainmatter  %Cuerpo del documento  
+
+ %Cuerpo del documento 
+
+ \chapter{Programar}
+    \input que_es_python.tex
+
+ \chapter{Estructuras de control}
+    \input estructuras_control.tex
+    
+ \chapter{Tipos de datos estructurados}
+ 	\input tipos_datos_estructurados.tex
+ 	
+ \chapter{Funciones y Módulos}
+ 	\input funciones.tex 		 	 	
+
+ \chapter{Programación orientada a objetos}
+ 	\input poo.tex 
+ 
+ \chapter{Excepciones}
+    \input excepciones.tex
+  
+ \chapter{Decoradores}
+    \input decoradores.tex
+
+ \chapter{Persistencia de la data}
+    \input persistencia.tex
+    
+ \chapter{Introducción a Django}
+    \input introduccion_django.tex
+
+ \chapter{Arquitectura de Django}
+    \input arquitectura_django.tex
+
+   \bibliographystyle{miestilo}
+   \bibliography{bibliografia}
+
+\end{document}
